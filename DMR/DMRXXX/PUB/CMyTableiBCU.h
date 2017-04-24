@@ -1,0 +1,57 @@
+#ifndef CMYTABLEDMR_H
+#define CMYTABLEDMR_H
+
+#define LOGADDR_DEVICETIME		0x0000		//RW;
+#define LOGADDR_DEVICEINFO		0x0007		//R;
+#define LOGADDR_ANALOGDATA		0x0100		//R;
+#define LOGADDR_ANALOGDATAEXT	0x0200		//R;
+#define LOGADDR_ANALOGWAVE		0x0300		//R;
+#define LOGADDR_DFTDATASET		0x0900		//R;
+#define LOGADDR_CONTROLOUT		0x0a00		//RW;
+#define LOGADDR_DEVICEPARAM		0x0b00		//RW;
+#define LOGADDR_DEVICEINPARAM	0x0c00		//RW;
+#define LOGADDR_DEVICEREGULATE	0x0f30		//RW;
+#define LOGADDR_DEVICESETPOINT	0x1000		//RW;
+#define LOGADDR_DEVICEDRW		0x1200		//RW;
+#define LOGADDR_DEVICELAD		0x1400		//RW;
+#define LOGADDR_EVENTTABLE		0x1600		//R;
+#define LOGADDR_WAVERECORD		0x1a00		//R;
+
+#define CONTROLOUT_INITDEVICE	0x0000		//初始化设备;
+#define CONTROLOUT_RESETDEVICE	0x0001		//复归信号;
+#define CONTROLOUT_FREEZEWAVE	0x0002		//冻结故障录波;
+#define CONTROLOUT_KH01			0x0010		//KH01;
+#define CONTROLOUT_KH02			0x0011		//KH02;
+#define CONTROLOUT_KH03			0x0012		//KH03;
+#define CONTROLOUT_KH04			0x0013		//KH04;
+#define CONTROLOUT_KH05			0x0014		//KH05;
+#define CONTROLOUT_KH06			0x0015		//KH06;
+#define CONTROLOUT_KH07			0x0016		//KH07;
+#define CONTROLOUT_KH08			0x0017		//KH08;
+#define CONTROLOUT_KH09			0x0018		//KH09;
+#define CONTROLOUT_KH10			0x0019		//KH10;
+#define CONTROLOUT_VKH1			0x0020		//VKH1;
+#define CONTROLOUT_VKH2			0x0021		//VKH2;
+#define CONTROLOUT_VKH3			0x0022		//VKH3;
+#define CONTROLOUT_VKH4			0x0023		//VKH4;
+#define CONTROLOUT_VKH5			0x0024		//VKH5;
+#define CONTROLOUT_VKH6			0x0025		//VKH6;
+#define CONTROLOUT_VKH7			0x0026		//VKH7;
+#define CONTROLOUT_VKH8			0x0027		//VKH8;
+#define CONTROLOUT_KPU			0x0028		//KPU;
+#define CONTROLOUT_KOC			0x0080		//KOC;
+#define CONTROLOUT_KOT			0x0081		//KOT;
+
+
+//-------------------------------------------------------------------
+#undef CLASSNAME_TABLE
+#define CLASSNAME_TABLE CMyTableDMR
+class CMyTableDMR:public CMyTable
+{
+public:
+	WORD* GetDeviceAddr(WORD wLogAddr,WORD wLength,BOOL bAccessWrite);
+	void ControlOut(WORD wControlOutCode,WORD wCommand);
+};
+
+#endif/*CMYTABLEDMR_H*/
+

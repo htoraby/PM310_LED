@@ -1,0 +1,10 @@
+del C:\iVEX\*.* /q
+del C:\iVEX\DMRXXX\*.* /q
+del C:\iVEX\TEMP\*.* /q
+PAUSE
+COPY *.* C:\iVEX
+PAUSE
+COPY DMRXXX\*.dll C:\iVEX\DMRXXX
+COPY DMRXXX\*.ini C:\iVEX\DMRXXX
+COPY DMRXXX\*.bmp C:\iVEX\DMRXXX
+PAUSE

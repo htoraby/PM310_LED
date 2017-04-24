@@ -1,0 +1,2 @@
+fromelf.exe --bin -o "$L@L.bin" "#L
+fromelf --bin --output .\PM310-RTU.bin ..\..\debug\STM32F103\PM310\PM310-RTU.axf

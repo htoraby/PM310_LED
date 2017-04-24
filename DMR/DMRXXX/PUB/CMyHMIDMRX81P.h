@@ -1,0 +1,91 @@
+enum IndexAnalog
+{
+	_INDEX_ANALOG = INDEX_ANALOG
+	,INDEX_11XUa
+	,INDEX_11XUb
+	,INDEX_11XUc
+	,INDEX_11XUab
+	,INDEX_11XUbc
+	,INDEX_11XUca
+	,INDEX_21XUa
+	,INDEX_21XUb
+	,INDEX_21XUc
+	,INDEX_21XUab
+	,INDEX_21XUbc
+	,INDEX_21XUca
+	,INDEX_21X3U0
+	,INDEX_21X3U2
+	,INDEX_1XF
+	,INDEX_12XUa
+	,INDEX_12XUb
+	,INDEX_12XUc
+	,INDEX_12XUab
+	,INDEX_12XUbc
+	,INDEX_12XUca
+	,INDEX_22XUa
+	,INDEX_22XUb
+	,INDEX_22XUc
+	,INDEX_22XUab
+	,INDEX_22XUbc
+	,INDEX_22XUca
+	,INDEX_22X3U0
+	,INDEX_22X3U2
+	,INDEX_2XF
+};
+
+enum IndexParamUnit
+{
+	_INDEX_PARAM_UNIT = INDEX_PARAM_RESERVED
+	,INDEX_PARAM_ALARM1XPT
+	,INDEX_PARAM_ALARM2XPT
+	,INDEX_PARAM_PROTECT1XPT
+	,INDEX_PARAM_PROTECT2XPT
+	,INDEX_PARAM_MODEPT
+	,INDEX_PARAM_SCALEPT
+	,INDEX_PARAM_MODETHD
+};
+
+enum IndexParamScale2
+{
+	_INDEX_PARAM_SCALE2 = INDEX_PARAM_SCALE2
+	,INDEX_PARAM_SCALE2ULN
+	,INDEX_PARAM_SCALE23U0
+};
+
+enum IndexAlarmed
+{
+	_INDEX_ALARMED = INDEX_ALARMED
+	,INDEX_ALARMED_1XPT
+	,INDEX_ALARMED_2XPT
+	,INDEX_ALARMED_ENABLELOCAL
+	,INDEX_ALARMED_ENABLEREMOTE
+	,INDEX_ALARMED_ENABLELINK
+	,INDEX_ALARMED_AUTOMODE
+	,INDEX_ALARMED_STATUS1XPT
+	,INDEX_ALARMED_STATUS2XPT
+};
+
+
+//-----------------------------------------------------------------------------
+#undef CLASSNAME_HMI
+#define CLASSNAME_HMI CMyHMIDMRX81P
+class CMyHMIDMRX81P:public CMyHMIDMR
+{
+public:
+	void OnInit(void);
+	void OnTimer10ms(void);
+public:
+	char* GetEventText(EVENT* pEvent);
+	void GetProtectActDataInfo(WORD wProtectAct,WORD wProtectIndexExt,WORD wActData,PROTECTACTDATAINFO* pProtectActDataInfo);
+	void AutoLCDDataOut(WORD wIndex);
+	void GetEditMetrics(WORD* pData);
+	void TestLights(void);
+protected:
+	VIRTUAL void iiiOnWhileLoopExt(WORD wKeyCode);
+	friend class CMyHMI;
+	friend class CMyHMIDMR;
+};
+
+
+extern CMyOutput g_lightEnableLocal;
+extern CMyOutput g_lightEnableAuto;
