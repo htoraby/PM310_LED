@@ -25,8 +25,8 @@ MyData g_dataS;
 MyData g_dataPF;
 
 // MyAlarmGroup3 s_alarmgroupCTP;
-MyAlarmGroup3 s_alarmgroupPT;
-MyAlarm s_alarmKM;
+// MyAlarmGroup3 s_alarmgroupPT;
+// MyAlarm s_alarmKM;
 
 
 // IM = 3413
@@ -54,10 +54,10 @@ void MyApp_OnInitSubParam(void)
     g_pDeviceParam->wScalePT = 100;
     g_pDeviceParam->wSLType = 1;
 
-    g_deviceSetpoint.INSetpoint[0].wLinkIN = LINKIN_IN01;
-    g_deviceSetpoint.INSetpoint[1].wLinkIN = LINKIN_IN02;
-    g_deviceSetpoint.INSetpoint[2].wLinkIN = LINKIN_IN03;
-    g_deviceSetpoint.INSetpoint[3].wLinkIN = LINKIN_IN04;
+//     g_deviceSetpoint.INSetpoint[0].wLinkIN = LINKIN_IN01;
+//     g_deviceSetpoint.INSetpoint[1].wLinkIN = LINKIN_IN02;
+//     g_deviceSetpoint.INSetpoint[2].wLinkIN = LINKIN_IN03;
+//     g_deviceSetpoint.INSetpoint[3].wLinkIN = LINKIN_IN04;
 }
 
 void MyApp_OnInitsub(void)
@@ -91,8 +91,8 @@ void MyApp_OnInitsub(void)
     Data_OnInit(&g_dataPF);
 
 // 	AlarmG_OnInit(&s_alarmgroupCTP);
-	AlarmG_OnInit(&s_alarmgroupPT);
-    Alarm_OnInit(&s_alarmKM);
+// 	AlarmG_OnInit(&s_alarmgroupPT);
+//     Alarm_OnInit(&s_alarmKM);
 
 // 	BreakerStatus_OnInit();
 
@@ -136,67 +136,47 @@ void MyApp_OnSetDataMetrics(void)
 
 void MyApp_OnResetSubDevice(void)
 {
-    AlarmG_OnReset(&s_alarmgroupPT);
-    Alarm_OnReset(&s_alarmKM);
+//     AlarmG_OnReset(&s_alarmgroupPT);
+//     Alarm_OnReset(&s_alarmKM);
 }
 
 void MyApp_OnCalculateData(void)
 {
-    Measure_SetData(DFT_Ia,&g_dataIa);
-    Measure_SetData(DFT_Ib,&g_dataIb);
-    Measure_SetData(DFT_Ic,&g_dataIc);
-// 	Measure_SetData(DFT_IA,&g_dataIA);
-// 	Measure_SetData(DFT_IB,&g_dataIB);
-// 	Measure_SetData(DFT_IC,&g_dataIC);
-// 	Measure_SetData(DFT_3I0,&g_data3I0);
+    Measure_SetData(DFT_Ia, &g_dataIa);
+    Measure_SetData(DFT_Ib, &g_dataIb);
+    Measure_SetData(DFT_Ic, &g_dataIc);
+// 	Measure_SetData(DFT_IA, &g_dataIA);
+// 	Measure_SetData(DFT_IB, &g_dataIB);
+// 	Measure_SetData(DFT_IC, &g_dataIC);
+// 	Measure_SetData(DFT_3I0, &g_data3I0);
 
-	Measure_SetData(DFT_Ua,&g_dataUa);
-	Measure_SetData(DFT_Ub,&g_dataUb);
-	Measure_SetData(DFT_Uc,&g_dataUc);
+	Measure_SetData(DFT_Ua, &g_dataUa);
+	Measure_SetData(DFT_Ub, &g_dataUb);
+	Measure_SetData(DFT_Uc, &g_dataUc);
 
-	Data_SetData2(&g_dataUab,g_dataUa.m_nR-g_dataUb.m_nR,g_dataUa.m_nX-g_dataUb.m_nX);
-	Data_SetData2(&g_dataUbc,g_dataUb.m_nR-g_dataUc.m_nR,g_dataUb.m_nX-g_dataUc.m_nX);
-	Data_SetData2(&g_dataUca,g_dataUc.m_nR-g_dataUa.m_nR,g_dataUc.m_nX-g_dataUa.m_nX);
+	Data_SetData2(&g_dataUab, (short)(g_dataUa.m_nR-g_dataUb.m_nR), (short)(g_dataUa.m_nX-g_dataUb.m_nX));
+	Data_SetData2(&g_dataUbc, (short)(g_dataUb.m_nR-g_dataUc.m_nR), (short)(g_dataUb.m_nX-g_dataUc.m_nX));
+	Data_SetData2(&g_dataUca, (short)(g_dataUc.m_nR-g_dataUa.m_nR), (short)(g_dataUc.m_nX-g_dataUa.m_nX));
 
-    PQ_Calculate1(&g_dataIa,&g_dataIb,&g_dataIc,&g_dataUa,&g_dataUb,&g_dataUc,SCALE2IM,SCALE2ULN,TRUE);
+//     PQ_Calculate1(&g_dataIa,&g_dataIb,&g_dataIc,&g_dataUa,&g_dataUb,&g_dataUc,SCALE2IM,SCALE2ULN,TRUE);
 //    PQ_Calculate2(&g_dataIa, &g_dataIc, &g_dataUab, &g_dataUbc, SCALE2IM, SCALE2ULN);
-    Data_SetData1(&g_dataP, g_nPabc);
-    Data_SetData1(&g_dataQ, g_nQabc);
-    g_nPFabc = g_nPFabc/10;
-    Data_SetData1(&g_dataPF, g_nPFabc);
-    {
-        short nS = (short)GetSqrtX(g_nPabc, g_nQabc);
-        Data_SetData1(&g_dataS, nS);
-    }
+//     Data_SetData1(&g_dataP, g_nPabc);
+//     Data_SetData1(&g_dataQ, g_nQabc);
+//     g_nPFabc = g_nPFabc/10;
+//     Data_SetData1(&g_dataPF, g_nPFabc);
+//     {
+//         short nS = (short)GetSqrtX(g_nPabc, g_nQabc);
+//         Data_SetData1(&g_dataS, nS);
+//     }
 
     Data_SetData1(&g_dataF,g_wFreq);
 
 //     SETBIT(g_dataP.m_nData<0,g_deviceInfo.wDeviceStatus2,DS2_DirectP);
 //     SETBIT(g_dataQ.m_nData<0,g_deviceInfo.wDeviceStatus2,DS2_DirectQ);
-    g_analogDataExt.dwDataPhImpW10ms += g_dwPhImpW10ms;
-    g_analogDataExt.dwDataQhImpW10ms += g_dwQhImpW10ms;
-    g_analogDataExt.dwDataPhExpW10ms += g_dwPhExpW10ms;
-    g_analogDataExt.dwDataQhExpW10ms += g_dwQhExpW10ms;
-//     if(g_analogDataExt.dwDataPhImpW10ms>=36000000L)
-//     {
-//         g_analogDataExt.dwDataPhImp++;
-//         g_analogDataExt.dwDataPhImpW10ms -= 36000000L;
-//     }
-//     if(g_analogDataExt.dwDataQhImpW10ms>=36000000L)
-//     {
-//         g_analogDataExt.dwDataQhImp++;
-//         g_analogDataExt.dwDataQhImpW10ms -= 36000000L;
-//     }
-//     if(g_analogDataExt.dwDataPhExpW10ms>=36000000L)
-//     {
-//         g_analogDataExt.dwDataPhExp++;
-//         g_analogDataExt.dwDataPhExpW10ms -= 36000000L;
-//     }
-//     if(g_analogDataExt.dwDataQhExpW10ms>=36000000L)
-//     {
-//         g_analogDataExt.dwDataQhExp++;
-//         g_analogDataExt.dwDataQhExpW10ms -= 36000000L;
-//     }
+//     g_analogDataExt.dwDataPhImpW10ms += g_dwPhImpW10ms;
+//     g_analogDataExt.dwDataQhImpW10ms += g_dwQhImpW10ms;
+//     g_analogDataExt.dwDataPhExpW10ms += g_dwPhExpW10ms;
+//     g_analogDataExt.dwDataQhExpW10ms += g_dwQhExpW10ms;
     if(g_analogDataExt.dwDataPhImpW10ms>=3600000000L)
     {
         g_analogDataExt.dwDataPhImp++;
@@ -225,7 +205,8 @@ void MyApp_OnCalculateData(void)
 
 BOOL MyApp_IsPTBreak(void)
 {
-	return AlarmG_IsAlarmStarted(&s_alarmgroupPT);
+// 	return AlarmG_IsAlarmStarted(&s_alarmgroupPT);
+    return FALSE;
 }
 
 void MyApp_OnAlarmDetect(void)
@@ -246,7 +227,7 @@ void MyApp_OnAlarmDetect(void)
 short MyApp_GetAng(MyData* pData, float fAngOffset)
 {
     short nAng;
-    float fAng = atan2(pData->m_nX, pData->m_nR);
+    float fAng = (float)atan2(pData->m_nX, pData->m_nR);
     fAng = fAng - fAngOffset;
     fAng = 572.9578f*fAng; // 1800.0f/3.1415926f*fAng;
     nAng = (fAng>0)?(short)(fAng+0.5f):(short)(fAng-0.5f);
@@ -261,7 +242,7 @@ short MyApp_GetDataSecondary(MyData* pData, short nData, BOOL bSignedType)
 //     short nData = pData->m_nDataAvg;
     dwDataSecondary = (DWORD)((nData>=0)?nData:(-nData));
     dwDataSecondary = (dwDataSecondary*pData->m_dwScaleSecondary+2048L)/4096L;
-    nData = dwDataSecondary;
+    nData = (short)dwDataSecondary;
     if(bSignedType) nData = (pData->m_nDataAvg>=0)?nData:-nData;
 
     return nData;
@@ -311,7 +292,7 @@ void MyApp_OnRefreshData(void)
         g_analogData.nAngUa = 0;
         if(g_dataUa.m_nData>315)
         {
-            fAngUa = atan2(g_dataUa.m_nX, g_dataUa.m_nR);
+            fAngUa = (float)atan2(g_dataUa.m_nX, g_dataUa.m_nR);
             if(g_dataIa.m_nData>68) g_analogData.nAngIa = MyApp_GetAng(&g_dataIa, fAngUa);
             else g_analogData.nAngIa = 0;
             
@@ -353,44 +334,40 @@ void MyApp_OnRefreshData(void)
 
 void MyApp_OnWaveRecord(WORD wCountAD)
 {
-//     WORD wData3I0 = 2000;
-// #ifdef DFT_3I0
-//     wData3I0 = g_analogWave.wData[DFT_3I0][wCountAD];
-// #endif
-    MyApp_OnWaveRecordEx(g_deviceInfo.wSwitchStatus1,
-        g_analogWave.wData[DFT_Ua][wCountAD],
-        g_analogWave.wData[DFT_Ub][wCountAD],
-        g_analogWave.wData[DFT_Uc][wCountAD],
-        g_analogWave.wData[DFT_Ia][wCountAD],
-        g_analogWave.wData[DFT_Ib][wCountAD],
-        g_analogWave.wData[DFT_Ic][wCountAD],
-        2000,
-        2000);
+//     MyApp_OnWaveRecordEx(g_deviceInfo.wSwitchStatus1,
+//         g_analogWave.wData[DFT_Ua][wCountAD],
+//         g_analogWave.wData[DFT_Ub][wCountAD],
+//         g_analogWave.wData[DFT_Uc][wCountAD],
+//         g_analogWave.wData[DFT_Ia][wCountAD],
+//         g_analogWave.wData[DFT_Ib][wCountAD],
+//         g_analogWave.wData[DFT_Ic][wCountAD],
+//         2000,
+//         2000);
 }
 
-const long c_lKI = 0.0690527f*SCALE2IM+0.5f;    //(1.4142f*SCALE2IM)/2048*100;
-const long c_lKU = 0.0690527f*SCALE2ULN+0.5f;    //(1.4142f*SCALE2ULN)/2048*100;
+const long c_lKI = (long)(0.0690527f*SCALE2IM+0.5f);    //(1.4142f*SCALE2IM)/2048*100;
+const long c_lKU = (long)(0.0690527f*SCALE2ULN+0.5f);    //(1.4142f*SCALE2ULN)/2048*100;
 
-void MyApp_SetWaveRecordK(WAVERECORD* pWaveRecord)
-{
-    short i;
-    REGULATE* pReg[6];
-    long lKUI[6];
-    pReg[0] = &g_regulateSet.regulate[DFT_Ua];
-    pReg[1] = &g_regulateSet.regulate[DFT_Ub];
-    pReg[2] = &g_regulateSet.regulate[DFT_Uc];
-    pReg[3] = &g_regulateSet.regulate[DFT_Ia];
-    pReg[4] = &g_regulateSet.regulate[DFT_Ib];
-    pReg[5] = &g_regulateSet.regulate[DFT_Ic];
-    
-    lKUI[0] = lKUI[1] = lKUI[2] = c_lKU;
-    lKUI[3] = lKUI[4] = lKUI[5] = c_lKI;
-    
-    for(i=0;i<6;++i)
-    {
-        long lK = GetSqrtX(pReg[i]->nRegulateR, pReg[i]->nRegulateX);
-        lK = (lK*lKUI[i]+5000L)/10000L;
-        pWaveRecord->nK[i] = (short)lK;
-    }
-    pWaveRecord->nK[6] = 10000;
-}
+// void MyApp_SetWaveRecordK(WAVERECORD* pWaveRecord)
+// {
+//     short i;
+//     REGULATE* pReg[6];
+//     long lKUI[6];
+//     pReg[0] = &g_regulateSet.regulate[DFT_Ua];
+//     pReg[1] = &g_regulateSet.regulate[DFT_Ub];
+//     pReg[2] = &g_regulateSet.regulate[DFT_Uc];
+//     pReg[3] = &g_regulateSet.regulate[DFT_Ia];
+//     pReg[4] = &g_regulateSet.regulate[DFT_Ib];
+//     pReg[5] = &g_regulateSet.regulate[DFT_Ic];
+//     
+//     lKUI[0] = lKUI[1] = lKUI[2] = c_lKU;
+//     lKUI[3] = lKUI[4] = lKUI[5] = c_lKI;
+//     
+//     for(i=0;i<6;++i)
+//     {
+//         long lK = GetSqrtX(pReg[i]->nRegulateR, pReg[i]->nRegulateX);
+//         lK = (lK*lKUI[i]+5000L)/10000L;
+//         pWaveRecord->nK[i] = (short)lK;
+//     }
+//     pWaveRecord->nK[6] = 10000;
+// }

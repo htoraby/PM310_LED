@@ -1,7 +1,7 @@
 #include <Main.h>
 
-MyOutput g_lightOpened;
-MyOutput g_lightClosed;
+// MyOutput g_lightOpened;
+// MyOutput g_lightClosed;
 
 //----------------------------------------------------
 const char c_szSCIBaudRate[3][6] = 
@@ -37,97 +37,98 @@ const char c_szSCIBaudRate[3][6] =
 //     AddINChannel("TWJ", "分位", "合位", 0);12
 //     AddINChannel("KKJ", "分位", "合位", 0);13
 
-const char* g_pszInName[SWITCH_COUNT] =
-{
-    "DI1",
-    "DI2",
-    "DI3",
-    "DI4",
-};
-
-const char* g_pszDoName[RELAYKH_COUNT] =
-{
-    "Do1",
-    "Do2",
-};
+// const char* g_pszInName[SWITCH_COUNT] =
+// {
+//     "DI1",
+//     "DI2",
+//     "DI3",
+//     "DI4",
+// };
+// 
+// const char* g_pszDoName[RELAYKH_COUNT] =
+// {
+//     "Do1",
+//     "Do2",
+// };
 
 
 //----------------------------------------------------
 void MyHMI_OnInitSub(void)
 {
-    Output_OnInit(&g_lightOpened);
-    Output_OnInit(&g_lightClosed);
+//     Output_OnInit(&g_lightOpened);
+//     Output_OnInit(&g_lightClosed);
     MyHMI_TestLights();
 }
 
 void MyHMI_OnTimer10msSub(void)
 {
-    Output_SetLevel(&g_lightOpened,(g_deviceInfo.wSwitchStatus1&0x0400)?STATUS_ON:STATUS_OFF);
-    Output_SetLevel(&g_lightClosed,(g_deviceInfo.wSwitchStatus1&0x0200)?STATUS_ON:STATUS_OFF);
-    Output_OnTimer10ms(&g_lightOpened);
-    Output_OnTimer10ms(&g_lightClosed);
+//     Output_SetLevel(&g_lightOpened, (g_deviceInfo.wSwitchStatus1&0x0400)?STATUS_ON:STATUS_OFF);
+//     Output_SetLevel(&g_lightClosed, (g_deviceInfo.wSwitchStatus1&0x0200)?STATUS_ON:STATUS_OFF);
+//     Output_OnTimer10ms(&g_lightOpened);
+//     Output_OnTimer10ms(&g_lightClosed);
 }
 
-char* MyHMI_GetEventTextSub(EVENT* pEvent)
-{
-    char* pszAlarmMsg = NULL;
-    switch(pEvent->wCode)
-    {
-    case EVENTCODE_ALARMPT3: pszAlarmMsg = "三相PT断线"; break;
-    case EVENTCODE_ALARMPT2: pszAlarmMsg = "两相PT断线"; break;
-    case EVENTCODE_ALARMPT1: pszAlarmMsg = "单相PT断线"; break;
-    case EVENTCODE_ALARMKM: pszAlarmMsg = "控制回路断线"; break;
-    }
-    if(pszAlarmMsg)
-    {
-    MyHMI_AddEventText(pszAlarmMsg);
-    if(pEvent->wData==0) MyHMI_AddEventText(MULTITEXT("恢复"," RESET"));
-    }
-    return g_szEventText;
-}
+// char* MyHMI_GetEventTextSub(EVENT* pEvent)
+// {
+//     char* pszAlarmMsg = NULL;
+//     switch(pEvent->wCode)
+//     {
+//     case EVENTCODE_ALARMPT3: pszAlarmMsg = "三相PT断线"; break;
+//     case EVENTCODE_ALARMPT2: pszAlarmMsg = "两相PT断线"; break;
+//     case EVENTCODE_ALARMPT1: pszAlarmMsg = "单相PT断线"; break;
+//     case EVENTCODE_ALARMKM: pszAlarmMsg = "控制回路断线"; break;
+//     }
+//     if(pszAlarmMsg)
+//     {
+//     MyHMI_AddEventText(pszAlarmMsg);
+//     if(pEvent->wData==0) MyHMI_AddEventText(MULTITEXT("恢复"," RESET"));
+//     }
+//     return g_szEventText;
+//     return NULL;
+// }
 
 static void SetDataMetricsPhQh(void)
 {
-    EditG_SetEditDataMetricsReal(0,999999999,0x91);
+//     EditG_SetEditDataMetricsReal(0,999999999,0x91);
 }
 
 void MyHMI_GetEditMetricsSub(WORD* pData)
 {
-    if(pData==&g_pDeviceParam->wToggleAlarmPT) EditG_SetEditEnumMetricsTog();
-    if(pData==&g_pDeviceParam->wModePT) EditG_SetEditEnumMetricsTog();
-    if(pData==&g_pDeviceParam->wScaleCT) EditG_SetEditDataMetricsInteger(1,9999,FALSE);
-    if(pData==&g_pDeviceParam->wScalePT) EditG_SetEditDataMetricsInteger(1,9999,FALSE);
-    if(pData==&g_pDeviceParam->wSLType) EditG_SetEditDataMetricsInteger(1,4,FALSE);
-    if(pData==(WORD*)&g_analogDataExt.dwDataPhImp) SetDataMetricsPhQh();
-    if(pData==(WORD*)&g_analogDataExt.dwDataQhImp) SetDataMetricsPhQh();
-    if(pData==(WORD*)&g_analogDataExt.dwDataPhExp) SetDataMetricsPhQh();
-    if(pData==(WORD*)&g_analogDataExt.dwDataQhExp) SetDataMetricsPhQh();
+//     if(pData==&g_pDeviceParam->wToggleAlarmPT) EditG_SetEditEnumMetricsTog();
+//     if(pData==&g_pDeviceParam->wModePT) EditG_SetEditEnumMetricsTog();
+//     if(pData==&g_pDeviceParam->wScaleCT) EditG_SetEditDataMetricsInteger(1,9999,FALSE);
+//     if(pData==&g_pDeviceParam->wScalePT) EditG_SetEditDataMetricsInteger(1,9999,FALSE);
+//     if(pData==&g_pDeviceParam->wSLType) EditG_SetEditDataMetricsInteger(1,4,FALSE);
+//     if(pData==(WORD*)&g_analogDataExt.dwDataPhImp) SetDataMetricsPhQh();
+//     if(pData==(WORD*)&g_analogDataExt.dwDataQhImp) SetDataMetricsPhQh();
+//     if(pData==(WORD*)&g_analogDataExt.dwDataPhExp) SetDataMetricsPhQh();
+//     if(pData==(WORD*)&g_analogDataExt.dwDataQhExp) SetDataMetricsPhQh();
 }
 
-void MyHMI_GetProtectActDataInfo(WORD wProtectAct,WORD wProtectIndexExt,WORD wActData,PROTECTACTDATAINFO* pProtectActDataInfo)
-{
-    pProtectActDataInfo->wFormat = 0x40;
-    switch(wProtectAct)
-    {
-    case PROTECTACT_IP:
-        pProtectActDataInfo->pszDataName = (char*)"I";
-        pProtectActDataInfo->pszUnitage = (char*)"A";
-        pProtectActDataInfo->wFormat = pProtectActDataInfo->wFormat | (g_dataIa.m_wFormatSecondary&0x0f);
-        pProtectActDataInfo->dwActData = MyApp_GetDataSecondary(&g_dataIa, wActData, FALSE); // Data_GetValueSecondaryFix2(&g_dataIa,wActData);
-        break;
-    case PROTECTACT_U:
-        pProtectActDataInfo->pszDataName = (char*)"U";
-        pProtectActDataInfo->pszUnitage = (char*)"V";
-        pProtectActDataInfo->wFormat = pProtectActDataInfo->wFormat | (g_dataUa.m_wFormatSecondary&0x0f);
-        pProtectActDataInfo->dwActData = MyApp_GetDataSecondary(&g_dataUa, wActData, FALSE);    // Data_GetValueSecondaryFix2(&g_dataUa,wActData);
-        break;
-// 	case PROTECTACT_3I0:
-// 		pProtectActDataInfo->pszDataName = (char*)"3I0";
-// 		pProtectActDataInfo->pszUnitage = (char*)"A";
-// 		pProtectActDataInfo->dwActData = Data_GetValueSecondaryFix2(&g_data3I0,wActData);
-// 		break;
-    }
-}
+// void MyHMI_GetProtectActDataInfo(WORD wProtectAct,WORD wProtectIndexExt,WORD wActData,PROTECTACTDATAINFO* pProtectActDataInfo)
+// {
+//     pProtectActDataInfo->wFormat = 0x40;
+//     switch(wProtectAct)
+//     {
+//     case PROTECTACT_IP:
+//         pProtectActDataInfo->pszDataName = (char*)"I";
+//         pProtectActDataInfo->pszUnitage = (char*)"A";
+//         pProtectActDataInfo->wFormat = pProtectActDataInfo->wFormat | (g_dataIa.m_wFormatSecondary&0x0f);
+//         pProtectActDataInfo->dwActData = MyApp_GetDataSecondary(&g_dataIa, wActData, FALSE); // Data_GetValueSecondaryFix2(&g_dataIa,wActData);
+//         break;
+//     case PROTECTACT_U:
+//         pProtectActDataInfo->pszDataName = (char*)"U";
+//         pProtectActDataInfo->pszUnitage = (char*)"V";
+//         pProtectActDataInfo->wFormat = pProtectActDataInfo->wFormat | (g_dataUa.m_wFormatSecondary&0x0f);
+//         pProtectActDataInfo->dwActData = MyApp_GetDataSecondary(&g_dataUa, wActData, FALSE);    // Data_GetValueSecondaryFix2(&g_dataUa,wActData);
+//         break;
+// // 	case PROTECTACT_3I0:
+// // 		pProtectActDataInfo->pszDataName = (char*)"3I0";
+// // 		pProtectActDataInfo->pszUnitage = (char*)"A";
+// // 		pProtectActDataInfo->dwActData = Data_GetValueSecondaryFix2(&g_data3I0,wActData);
+// // 		break;
+//     }
+// }
 
 DWORD DataConver(short nData)
 {
@@ -173,45 +174,49 @@ void MyHMI_AutoLCDDataOutSub(WORD wIndex)
     case INDEX_2Ubc: pData = &g_dataUbc; break;
     case INDEX_2Uca: pData = &g_dataUca; break;
 //     case INDEX_23I0: pData = &g_data3I0; break;
-    case INDEX_AngIa: LCD_AutoRealOut(DataConver(g_analogData.nAngIa), 0x41); break;
-    case INDEX_AngIb: LCD_AutoRealOut(DataConver(g_analogData.nAngIb), 0x41); break;
-    case INDEX_AngIc: LCD_AutoRealOut(DataConver(g_analogData.nAngIc), 0x41); break;
-    case INDEX_AngUa: LCD_AutoRealOut(DataConver(g_analogData.nAngUa), 0x41); break;
-    case INDEX_AngUb: LCD_AutoRealOut(DataConver(g_analogData.nAngUb), 0x41); break;
-    case INDEX_AngUc: LCD_AutoRealOut(DataConver(g_analogData.nAngUc), 0x41); break;
-    case INDEX_AngUab: LCD_AutoRealOut(DataConver(g_analogData.nAngUab), 0x41); break;
-    case INDEX_AngUbc: LCD_AutoRealOut(DataConver(g_analogData.nAngUbc), 0x41); break;
-    case INDEX_AngUca: LCD_AutoRealOut(DataConver(g_analogData.nAngUca), 0x41); break;
+    case INDEX_AngIa: // LCD_AutoRealOut(DataConver(g_analogData.nAngIa), 0x41); break;
+    case INDEX_AngIb: // LCD_AutoRealOut(DataConver(g_analogData.nAngIb), 0x41); break;
+    case INDEX_AngIc: // LCD_AutoRealOut(DataConver(g_analogData.nAngIc), 0x41); break;
+    case INDEX_AngUa: // LCD_AutoRealOut(DataConver(g_analogData.nAngUa), 0x41); break;
+    case INDEX_AngUb: // LCD_AutoRealOut(DataConver(g_analogData.nAngUb), 0x41); break;
+    case INDEX_AngUc: // LCD_AutoRealOut(DataConver(g_analogData.nAngUc), 0x41); break;
+    case INDEX_AngUab: // LCD_AutoRealOut(DataConver(g_analogData.nAngUab), 0x41); break;
+    case INDEX_AngUbc: // LCD_AutoRealOut(DataConver(g_analogData.nAngUbc), 0x41); break;
+    case INDEX_AngUca: // LCD_AutoRealOut(DataConver(g_analogData.nAngUca), 0x41); break;
     case INDEX_F:
-        pData = &g_dataF;
-        if(g_dataF.m_nDataAvg>=7500 || g_dataF.m_nDataAvg<4500)
-        {
-            LCD_AutoRealOut(0, pData->m_wFormatSecondary);
-            pData = NULL;
-        }
+//         pData = &g_dataF;
+//         if(g_dataF.m_nDataAvg>=7500 || g_dataF.m_nDataAvg<4500)
+//         {
+//             LCD_AutoRealOut(0, pData->m_wFormatSecondary);
+//             pData = NULL;
+//         }
         break;
-    case INDEX_PARAM_ALARMPT: EditG_AddEditEnumMul(&g_pDeviceParam->wToggleAlarmPT); break;
-    case INDEX_PARAM_MODEPT: EditG_AddEditEnumMul(&g_pDeviceParam->wModePT); break;
-    case INDEX_ALARMED_PT: LCD_AutoOutALM_OK((WORD)(g_deviceInfo.wDeviceStatus2&DS2_AlarmPT)); break;
+    case INDEX_PARAM_ALARMPT: // EditG_AddEditEnumMul(&g_pDeviceParam->wToggleAlarmPT); break;
+    case INDEX_PARAM_MODEPT: // EditG_AddEditEnumMul(&g_pDeviceParam->wModePT); break;
+    case INDEX_ALARMED_PT: // LCD_AutoOutALM_OK((WORD)(g_deviceInfo.wDeviceStatus2&DS2_AlarmPT)); break;
     case INDEX_PhI: dwData = (g_analogDataExt.dwDataPhImp); wFormat = 0x91; break;
     case INDEX_QhI: dwData = (g_analogDataExt.dwDataQhImp); wFormat = 0x91; break;
     case INDEX_PhE: dwData = (g_analogDataExt.dwDataPhExp); wFormat = 0x91; break;
     case INDEX_QhE: dwData = (g_analogDataExt.dwDataQhExp); wFormat = 0x91; break;
-    case INDEX_PARAM_PhI: EditG_AddEditDataDWord(&g_analogDataExt.dwDataPhImp); break;
-    case INDEX_PARAM_QhI: EditG_AddEditDataDWord(&g_analogDataExt.dwDataQhImp); break;
-    case INDEX_PARAM_PhE: EditG_AddEditDataDWord(&g_analogDataExt.dwDataPhExp); break;
-    case INDEX_PARAM_QhE: EditG_AddEditDataDWord(&g_analogDataExt.dwDataQhExp); break;
+    case INDEX_PARAM_PhI: // EditG_AddEditDataDWord(&g_analogDataExt.dwDataPhImp); break;
+    case INDEX_PARAM_QhI: // EditG_AddEditDataDWord(&g_analogDataExt.dwDataQhImp); break;
+    case INDEX_PARAM_PhE: // EditG_AddEditDataDWord(&g_analogDataExt.dwDataPhExp); break;
+    case INDEX_PARAM_QhE: // EditG_AddEditDataDWord(&g_analogDataExt.dwDataQhExp); break;
+        break;
     }
     if(pData!=NULL)
     {
+        WORD wchMax = c_wLEDX1 - 1;
         dwData = (bDataPrimary)?pData->m_dwDataPrimary:pData->m_dwDataSecondary;
         wFormat = (bDataPrimary)?pData->m_wFormatPrimary:pData->m_wFormatSecondary;
+        if(g_wLEDAutoPosY>c_wLEDY1) wchMax = c_wLEDX2 - 1;
+        if((wFormat>>4)>wchMax) wFormat = (wFormat&0x0f) | (wchMax<<4);
     }
-    if(dwData!=0xffffffff) LCD_AutoRealOut(dwData,wFormat);
+    if(dwData!=0xffffffff) ; LED_RealOut(g_wLEDAutoPosX, g_wLEDAutoPosY, dwData, wFormat);
 }
 
 void MyHMI_TestLightsSub(void)
 {
-    Output_EnterTest(&g_lightOpened,OUTPUT_TM_11,300);
-    Output_EnterTest(&g_lightClosed,OUTPUT_TM_11,300);
+//     Output_EnterTest(&g_lightOpened,OUTPUT_TM_11,300);
+//     Output_EnterTest(&g_lightClosed,OUTPUT_TM_11,300);
 }

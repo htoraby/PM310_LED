@@ -1,32 +1,41 @@
-#ifndef CMYPAGEiBCU2140L_H
-#define CMYPAGEiBCU2140L_H
+//-----------------------------------------------------------------------------------------------------
+//                                  Copyright (c) 2009 by ThinkBoy.
+//                                      All rights reserved.
+//
+// Header:
+// File Name:
+// Author: jimmy
+// Date:
+//-----------------------------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-extern WORD Page_OnKeyMsg(WORD wKeyCode);
-extern void Page_OnRefreshPage(WORD wRefreshMode);
+#ifndef _CMYPAGENPS7510_H
+#define _CMYPAGENPS7510_H
 
-extern void Page_OnRefreshACData(WORD wRefreshMode);
-extern void Page_OnRPProtectData(WORD wRefreshMode);
-extern void Page_OnRPMeansureData(WORD wRefreshMode);
-extern void Page_OnRPPrimaryData(WORD wRefreshMode);
+enum DISPLAYTYPE
+{
+    DISPLAY_U = 0,          // 显示电压
+    DISPLAY_I,              // 显示电流
+    DISPLAY_P,              // 显示功率
+    DISPLAY_E,              // 显示电度
+    DISPLAY_SET,            // 参数设置
+//     DISPLAY_INFO,               // 信息显示
+    DISPLAY_MAX,
+};
 
-extern void Page_OnRefreshPageSwitch(WORD wRefreshMode);
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
+// 
+// #ifdef __cplusplus
+// }
+// #endif /* extern "C" */
 
-extern void Page_OnRefreshPageWaveRecord(WORD wRefreshMode);
-extern void Page_OnRefreshSetpoint(WORD wRefreshMode, BOOL bEdit);
+#endif/*_CMYPAGENPS7510_H*/
 
-extern void Page_OnRefreshPageParamSetup(WORD wRefreshMode);
-extern void Page_OnRefreshPageVector(WORD wRefreshMode);
-extern void Page_OnRefreshPageRTWave(WORD wRefreshMode);
-extern void Page_OnRefreshInfo(WORD wRefreshMode);
-extern void Page_OnRPParamBase(WORD wRefreshMode);
-extern void Page_OnRPSetupEnergy(WORD wRefreshMode);
-extern void Page_OnRefreshPageSetpoint(WORD* pDeviceSetpoint,BOOL bDisplaySetpoint);
-extern void Page_OnRPBOTest(WORD wRefreshMode);
-extern void Page_OnRPAdjust(WORD wRefreshMode);
-extern void Page_OnRPEngeryData(WORD wRefreshMode);
+//-----------------------------------------------------------------------------------------------------
+//                                      End Of File
+//-----------------------------------------------------------------------------------------------------
 
 
-#endif/*CMYPAGEiBCU2140L_H*/
 
 

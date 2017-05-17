@@ -7,6 +7,12 @@
 #define DEVICETYPE_NAME         "KT90R"
 #define DEVICETYPE_CODE         (310)
 
+#define KEY_NULL            0x0000
+#define KEY_UP              0x0001
+#define KEY_DOWN            0x0002
+#define KEY_ENTER           0x0004
+#define KEY_CANCEL          0x0008
+
 #define APP_OnInitParams		MyApp_OnInitParams
 #define APP_OnInit				MyApp_OnInit
 #define APP_OnTimer1ms			MyApp_OnTimer1ms
@@ -18,7 +24,7 @@
 #define HMI_OnInit				MyHMI_OnInit
 #define HMI_OnTimer1ms()
 #define HMI_OnTimer10ms			MyHMI_OnTimer10ms
-#define HMI_OnTimer250ms		EditG_OnTimer250ms
+#define HMI_OnTimer250ms()		// EditG_OnTimer250ms
 #define HMI_OnTimer1000ms		MyHMI_OnTimer1000ms
 #define HMI_OnWhileLoop			MyHMI_OnWhileLoop
 
@@ -32,7 +38,7 @@
 #define HDIF_OnPollingComm		MyHDIF_OnPollingComm
 
 //-----------------------------------------------------------------------------
-#define KEY_REPEATCODE		(KEY_UP|KEY_DOWN)    // (KEY_UP|KEY_DOWN|KEY_LEFT|KEY_RIGHT)
+#define KEY_REPEATCODE		(KEY_UP|KEY_DOWN)
 
 #define ALARMPT_10V			325		// µÁ—π10V
 
@@ -106,26 +112,27 @@
 #include "PUB\__DevSet.h"
 #include "PUB\__Output.h"
 #include "PUB\__Key.h"
-#include "PUB\__Edit.h"
-#include "PUB\__Event.h"
+// #include "PUB\__Edit.h"
+// #include "PUB\__Event.h"
+#include "Pub\_LEDEdit.h"
 #include "PUB\__Data.h"
 #include "PUB\__DFT.h"
 #include "PUB\__Measure.h"
 #include "PUB\__switch.h"
-#include "PUB\__Alarm.h"
-#include "PUB\__ALARMCTPT.h"
-#include "PUB\__PQPhQh.h"
-#include "Pub\__WaveRecord.h"
+// #include "PUB\__Alarm.h"
+// #include "PUB\__ALARMCTPT.h"
+// #include "PUB\__PQPhQh.h"
+// #include "Pub\__WaveRecord.h"
 //Protocol:
 #include "PUB\MyProtocol.h"
 #include "PUB\MyProtocolMODBUS.h"
 // HDIF
-// #include "PUB\__LCD.h"
-// #include "PUB\__LCDMem.h"
+#include "PUB\_LED.h"
+#include "PUB\_LEDMem.h"
 #include ".\HDIFNPS7510.h"
 // Protect
-#include "DMR\PUB\__Protect.h"
-#include "DMR\DMRXXX\NPS7510\Protect.h"
+// #include "DMR\PUB\__Protect.h"
+// #include "DMR\DMRXXX\NPS7510\Protect.h"
 // APP
 #include "DMR\DMRXXX\NPS7510\_MyAppNPS7510.h"
 #include "DMR\PUB\MyApp.h"
@@ -137,16 +144,16 @@
 #include "DMR\PUB\MyHmiDMR.h"
 #include "DMR\DMRXXX\NPS7510\_MyHMINPS7510.h"
 //Menu:
-#include "PUB\MyMenu.h"
-#include "DMR\PUB\MyMenu160x160.h"
-#include "DMR\DMRXXX\NPS7510\MyMenuNPS7510.h"
+// #include "PUB\MyMenu.h"
+// #include "DMR\PUB\MyMenu160x160.h"
+// #include "DMR\DMRXXX\NPS7510\MyMenuNPS7510.h"
 //Page:
-#include "PUB\MyPage.h"
-#include "DMR\PUB\MyPage160x160.h"
-#include "DMR\PUB\MyPG_Protect.h"
-#include "DMR\DMRXXX\NPS7510\MyPG_ProtectNPS7510.h"
+#include "DMR\DMRXXX\NPS7510\MyPage.h"
+// #include "DMR\PUB\MyPage160x160.h"
+// #include "DMR\PUB\MyPG_Protect.h"
+// #include "DMR\DMRXXX\NPS7510\MyPG_ProtectNPS7510.h"
 #include "DMR\DMRXXX\NPS7510\MyPageNPS7510.h"
-#include "DMR\Pub\MyPG_WaveRecord.h"
+// #include "DMR\Pub\MyPG_WaveRecord.h"
 
 #endif /*MAIN_H*/
 

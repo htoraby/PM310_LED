@@ -1,6 +1,7 @@
 #ifndef CMyHDIFDMR_H
 #define CMyHDIFDMR_H
 
+#include <string.h>
 #include "HDLIB\ArEEPROM_iVEX.h"
 #include "HDLIB\Flash_iVEX.h"
 #include "HDLIB\ArRTC_iVEX.h"

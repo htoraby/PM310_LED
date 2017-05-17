@@ -84,6 +84,8 @@ extern WORD GetSqrt(DWORD dwData);
 //说明:取两个数据的模(平方和的平方根);
 extern WORD GetSqrtX(short nData1,short nData2);
 
+extern char BinToStr(BYTE Data);
+
 #ifdef __cplusplus
 }
 #endif /* extern "C" */

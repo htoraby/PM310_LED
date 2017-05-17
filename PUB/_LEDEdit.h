@@ -1,17 +1,42 @@
-extern unsigned short g_wLEDX;
-extern unsigned short g_wLEDY;
-extern unsigned short g_wPageAllCount;
+//-----------------------------------------------------------------------------------------------------
+//                                  Copyright (c) 2009 by ThinkBoy.
+//                                      All rights reserved.
+//
+// Header:
+// File Name:
+// Author: jimmy
+// Date:
+//-----------------------------------------------------------------------------------------------------
 
-extern void EditRemoveAll(void);
-extern void EditAddEnum(unsigned short* pData,char* pszEnum,unsigned short wCountEnum,unsigned short wCountChar);
-extern void EditAddToggle(unsigned short* pData);
-extern void EditAddInteger(unsigned short* pData,unsigned short wDataMin,unsigned short wDataMax,unsigned short bReserveZero);
-extern void EditAddDataWord(unsigned short* pData,unsigned long dwDataMin,unsigned long dwDataMax,
-	unsigned short wFormat,unsigned short wScale2XX,unsigned short wDataRunTime);
-extern void EditAddPhQh(unsigned long* pData);
-extern void EditEnterEdit(void);
-extern void EdiQuittEdit(void);
-extern unsigned short OnEditKeyMsg(unsigned short wKeyCode);
-extern void OnTaskEdit(void);
+#ifndef __LEDEDIT_H
+#define __LEDEDIT_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern void Edit_OnInit(void);
+extern void Edit_AddEditEnumMul(WORD* pData);
+extern void Edit_AddEditDataWord(WORD* pData);
+extern void Edit_AddEditDataDWord(DWORD* pData);
+extern void Edit_OnRefreshPage(void);
+extern void Edit_EnableEdit(WORD wRefreshMode);
+extern WORD Edit_OnKeyMsg(WORD wKeyCode);
+extern void Edit_OnTimer250ms(void);
+extern void Edit_SetEditEnumMetricsTog(void);
+extern void Edit_SetEditEnumMetricsMul(WORD wCountEnum, WORD wCountChar, char** pszEnum);
+extern void Edit_SetEditDataMetricsInteger(WORD wDataMin, WORD wDataMax);
+extern void Edit_SetEditDataMetricsReal(DWORD dwDataMin, DWORD dwDataMax, WORD wFormat);
+
+
+#ifdef __cplusplus
+}
+#endif /* extern "C" */
+
+#endif /*__LEDEDIT_H*/
+
+//-----------------------------------------------------------------------------------------------------
+//                                      End Of File
+//-----------------------------------------------------------------------------------------------------
 
 

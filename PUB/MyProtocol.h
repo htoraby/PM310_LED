@@ -1,3 +1,13 @@
+//-----------------------------------------------------------------------------------------------------
+//                                  Copyright (c) 2009 by ThinkBoy.
+//                                      All rights reserved.
+//
+// Header:
+// File Name:
+// Author: jimmy
+// Date:
+//-----------------------------------------------------------------------------------------------------
+
 #ifndef _MYPROTOCOL_H
 #define _MYPROTOCOL_H
 
@@ -34,7 +44,7 @@ extern WORD g_wCommStatus;
 extern WORD g_wCountTimeout;
 extern WORD g_wCRCCal;
 
-	//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 extern void Protocol_OnInit(void);
 extern void Protocol_OnPolling(void);
 extern BOOL Protocol_IsCommActive(void);
@@ -46,5 +56,11 @@ extern BYTE Protocol_GetSndData(void);
 #endif /* extern "C" */
 
 #endif/*_MYPROTOCOL_H*/
+
+//-----------------------------------------------------------------------------------------------------
+//                                      End Of File
+//-----------------------------------------------------------------------------------------------------
+
+
 
 

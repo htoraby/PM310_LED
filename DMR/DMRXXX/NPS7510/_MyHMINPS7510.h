@@ -101,7 +101,7 @@ extern "C" {
 extern void MyHMI_OnInitSub(void);
 extern void MyHMI_OnTimer10msSub(void);
 // extern void MyHMI_OnTimer1000msSub(void);
-extern char* MyHMI_GetEventTextSub(EVENT* pEvent);
+// extern char* MyHMI_GetEventTextSub(EVENT* pEvent);
 extern void MyHMI_GetEditMetricsSub(WORD* pData);
 extern void MyHMI_AutoLCDDataOutSub(WORD wIndex);
 extern void MyHMI_TestLightsSub(void);
@@ -109,12 +109,12 @@ extern void MyHMI_TestLightsSub(void);
 extern void MyHMI_GetProtectActDataInfo(WORD wProtectAct,WORD wProtectIndexExt,WORD wActData,PROTECTACTDATAINFO* pProtectActDataInfo);
 #endif/*_CMYPROTECT_H*/
 
-extern MyOutput g_lightOpened;
-extern MyOutput g_lightClosed;
-
-extern const char* g_pszInName[SWITCH_COUNT];
-extern const char* g_pszINSETName[INSETPOINTNUM];
-extern const char* g_pszDoName[RELAYKH_COUNT];    
+// extern MyOutput g_lightOpened;
+// extern MyOutput g_lightClosed;
+// 
+// extern const char* g_pszInName[SWITCH_COUNT];
+// // extern const char* g_pszINSETName[INSETPOINTNUM];
+// extern const char* g_pszDoName[RELAYKH_COUNT];    
 
 #ifdef __cplusplus
 }

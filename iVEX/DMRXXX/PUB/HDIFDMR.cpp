@@ -66,3 +66,8 @@ void MyHDIF_OnWhileLoop(void)
 {
 
 }
+
+void LED_Flush(void)
+{
+
+}

@@ -58,7 +58,7 @@ void Event_AddEvent(WORD wEventType,WORD wEventCode,WORD wEventData)
 	pEvent->wData = wEventData;
 	if(wEventType==EVENTTYPE_ALARMED) SetAlarmedFlag;
 	if(wEventType==EVENTTYPE_TRIPPED) SetTrippedFlag;
-	JumpToEventDisplay;
+// 	JumpToEventDisplay;
 }
 
 EVENT* Event_GetEvent(WORD wIndexEvent)

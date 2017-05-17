@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ..\..\Public\Public.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:"..\..\iVex\Device\NPS7510.dll" /pdbtype:sept
+# ADD LINK32 ..\..\Public\Public.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:"..\..\iVex\Device\PM310LED.dll" /pdbtype:sept
 
 !ENDIF 
 
@@ -90,14 +90,6 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__Alarm.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__AlarmCTPT.c
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\PUB\__Data.c
@@ -112,31 +104,7 @@ SOURCE=..\..\..\PUB\__DFT.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\PUB\__Edit.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__Event.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__HZ12x12.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__HZ16x16.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\PUB\__Key.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__LCD.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__LCDMem.c
 # End Source File
 # Begin Source File
 
@@ -152,14 +120,6 @@ SOURCE=..\..\..\PUB\__Output.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\PUB\__PQPhQh.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\__Protect.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\PUB\__Switch.c
 # End Source File
 # Begin Source File
@@ -172,7 +132,15 @@ SOURCE=..\..\..\PUB\__Tool.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\PUB\__WaveRecord.c
+SOURCE=..\..\..\PUB\_LED.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\PUB\_LEDEdit.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\PUB\_LEDMem.c
 # End Source File
 # Begin Source File
 
@@ -216,39 +184,11 @@ SOURCE=..\..\..\DMR\PUB\MyHMIDMR.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\PUB\MyMenu.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\MyMenu160x160.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\DMRXXX\NPS7510\MyMenuNPS7510.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\MyPage.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\MyPage160x160.c
+SOURCE=..\..\..\DMR\DMRXXX\NPS7510\MyPage.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\DMR\DMRXXX\NPS7510\MyPageNPS7510.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\MyPG_Protect.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\DMRXXX\NPS7510\MyPG_ProtectNPS7510.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\MyPG_WaveRecord.c
 # End Source File
 # Begin Source File
 
@@ -280,10 +220,6 @@ SOURCE=.\NPS7510.rc
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\DMR\DMRXXX\NPS7510\Protect.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\StdAfx.cpp
 # ADD CPP /Yc"stdafx.h"
 # End Source File
@@ -291,14 +227,6 @@ SOURCE=.\StdAfx.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__Alarm.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__AlarmCTPT.h
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\PUB\__Data.h
@@ -313,23 +241,7 @@ SOURCE=..\..\..\PUB\__DFT.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\PUB\__Edit.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__Event.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\PUB\__Key.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__LCD.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__LCDMem.h
 # End Source File
 # Begin Source File
 
@@ -342,10 +254,6 @@ SOURCE=..\..\..\PUB\__Measure.h
 # Begin Source File
 
 SOURCE=..\..\..\PUB\__Output.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\__PQPhQh.h
 # End Source File
 # Begin Source File
 
@@ -365,7 +273,15 @@ SOURCE=..\..\..\PUB\__Tool.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\PUB\__WaveRecord.h
+SOURCE=..\..\..\PUB\_LED.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\PUB\_LEDEdit.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\PUB\_LEDMem.h
 # End Source File
 # Begin Source File
 
@@ -425,39 +341,11 @@ SOURCE=..\..\..\PUB\MyLock.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\PUB\MyMenu.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\MyMenu160x160.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\DMRXXX\NPS7510\MyMenuNPS7510.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\PUB\MyPage.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\MyPage160x160.h
+SOURCE=..\..\..\DMR\DMRXXX\NPS7510\MyPage.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\DMR\DMRXXX\NPS7510\MyPageNPS7510.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\MyPG_Protect.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\DMRXXX\NPS7510\MyPG_ProtectNPS7510.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\PUB\MyPG_WaveRecord.h
 # End Source File
 # Begin Source File
 
@@ -478,10 +366,6 @@ SOURCE=..\..\..\DMR\PUB\MyTableDMR.h
 # Begin Source File
 
 SOURCE=.\NPS7510.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\DMR\DMRXXX\NPS7510\Protect.h
 # End Source File
 # Begin Source File
 

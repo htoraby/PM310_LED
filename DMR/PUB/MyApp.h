@@ -128,7 +128,7 @@ extern void MyApp_TestRelay(WORD wIndex);
 
 extern void MyApp_OnTimerSample(WORD wIndex);
 
-extern void MyApp_OnWaveRecordEx(WORD wSwitchStatus,WORD wData1,WORD wData2,WORD wData3,WORD wData4,WORD wData5,WORD wData6,WORD wData7,WORD wData8);
+// extern void MyApp_OnWaveRecordEx(WORD wSwitchStatus,WORD wData1,WORD wData2,WORD wData3,WORD wData4,WORD wData5,WORD wData6,WORD wData7,WORD wData8);
 
 
 extern DEVICEINFO g_deviceInfo;
@@ -142,6 +142,7 @@ extern MyOutput g_relayKOT[RELAYKOT_COUNT];
 extern WORD g_wFreq;
 extern WORD g_wCountAllOld;
 extern BOOL g_bDInfoChanged;
+extern DWORD g_dwSystick;
 
 #ifdef __cplusplus
 }

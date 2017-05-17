@@ -133,8 +133,12 @@ public:
 	COLORREF m_clrMask;			// 图片要扣去部分颜色
 protected:
 	BOOL m_bHide;
+    BOOL m_bForceRefresh;
+    BOOL m_bRefreshed;          // 是否需要刷新
+
 public:
 	void SetHide(BOOL bHide);
+    BOOL IsRefreshed(void) { return m_bRefreshed; }
 };
 
 
@@ -152,13 +156,17 @@ public:
 public:
 	CString m_strGraphON;		// LED亮时图片名称(包含相对iVEX路径)
 	CString m_strGraphOFF;		// LED灭时图片名称(包含相对iVEX路径)
+
 protected:
 	HBITMAP m_hBitmapON;
 	HBITMAP m_hBitmapOFF;
 	BOOL m_bStatusNew;
 	BOOL m_bStatusOld;
+//     BOOL m_bForceRefresh;
+//     BOOL m_bRefreshed;          // 是否需要刷新
+
 public:
-	void SetStatus(BOOL bStatus);
+	void SetStatus(BOOL bStatus, BOOL bForceRefresh = FALSE);
 	virtual void OnCreate(void);
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnDrawRefresh(CDC* pDC);
@@ -228,7 +236,7 @@ protected:
 	short m_nStatusNew;
 	short m_nStatusOld;
 public:
-	void SetStatus(short nStatus);
+	void SetStatus(short nStatus, BOOL bForceRefresh = FALSE);
 	virtual void OnCreate(void);
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnDrawRefresh(CDC* pDC);

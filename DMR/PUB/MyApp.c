@@ -12,6 +12,8 @@ DeviceSet g_devicesetParam;
 DeviceSet g_devicesetRegulate;
 DeviceSet g_devicesetSetpoint;
 
+DWORD g_dwSystick = 0;
+
 WORD g_wCountAllOld;
 BOOL g_bDInfoChanged;
 
@@ -21,7 +23,8 @@ WORD g_wFreq;
 WORD MyApp_GetCountAll(void)
 {
 	WORD wCountAll;
-	g_deviceInfo.wCountEventTable = g_wEventTableCountNew;
+// 	g_deviceInfo.wCountEventTable = g_wEventTableCountNew;
+    g_deviceInfo.wCountEventTable  = 0;
 	g_deviceInfo.wCountDeviceParam = g_devicesetParam.m_wCountNew;
 	g_deviceInfo.wCountDeviceRegulate = g_devicesetRegulate.m_wCountNew;
 #ifdef _CMYPROTECT_H
@@ -29,7 +32,8 @@ WORD MyApp_GetCountAll(void)
 #else
 	g_deviceInfo.wCountDeviceSetpoint = 0;
 #endif/*_CMYPROTECT_H*/
-    g_deviceInfo.wCountWaveRecord = g_wWRCountNew;
+//     g_deviceInfo.wCountWaveRecord = g_wWRCountNew;
+    g_deviceInfo.wCountWaveRecord = 0;
 	wCountAll = 0;
 	wCountAll += g_deviceInfo.wCountEventTable;
 	wCountAll += g_deviceInfo.wCountDeviceParam;
@@ -93,7 +97,7 @@ void MyApp_OnInitParams()
 // 	short i;
 	MemoryClear((WORD*)&g_deviceInfo,SIZEOFWORD(g_deviceInfo));
 	MemoryClear((WORD*)&g_deviceParam,SIZEOFWORD(g_deviceParam));
-	MemoryClear((WORD*)&g_deviceSetpoint,SIZEOFWORD(g_deviceSetpoint));
+// 	MemoryClear((WORD*)&g_deviceSetpoint,SIZEOFWORD(g_deviceSetpoint));
 	Measure_OnInitParams();
 
 	g_deviceParam.wModbusAddr1 = 1;
@@ -101,7 +105,7 @@ void MyApp_OnInitParams()
     g_deviceParam.wLCDContrast = 8;
 	g_deviceParam.wMultiLanguage  = 0;
 	CopyCharToWSZ(g_deviceParam.wszDeviceType,(char*)DEVICETYPE_NAME);
-	Protect_OnInitSetpoint(&g_deviceSetpoint.wSetpointArea1[0]);
+// 	Protect_OnInitSetpoint(&g_deviceSetpoint.wSetpointArea1[0]);
 	MyApp_OnInitSubParam();
 }
 
@@ -131,7 +135,7 @@ void MyApp_OnInit(void)
 // 	g_bDInfoChanged = 0;
 // 	
 	Time_OnInit();
-	Event_OnInit();
+// 	Event_OnInit();
 	Switch_OnInit();
 	for(i=0;i<RELAYKH_COUNT;i++) Output_OnInit(&g_relayKH[i]);
 #ifdef RELAYKOT_COUNT
@@ -158,19 +162,20 @@ void MyApp_OnInit(void)
 // 		g_wProtectActedUser = wTmp[6];
 #endif/*_CMYPROTECT_H*/
 	}
-    WaveRecord_OnInit();
-    WaveRecord_StartRecord();
+//     WaveRecord_OnInit();
+//     WaveRecord_StartRecord();
     MyApp_OnInitsub();
     MyApp_OnSetDataMetrics();
 }
 
 void MyApp_OnInitDevice(void)
 {
-	Event_OnInitDevice();
+// 	Event_OnInitDevice();
 }
 
 void MyApp_OnTimer1ms(void)
 {
+    ++g_dwSystick;
     Time_OnTimer1ms();
     Switch_OnTimer1ms();
     g_deviceInfo.wSwitchStatus1 = g_wSwitchStatus1;
@@ -213,8 +218,8 @@ void MyApp_OnTimer10ms(void)
 void MyApp_OnTimer1000ms(void)
 {
     Time_OnTimer1000ms();
-    Event_OnTimer1000ms();
-    WaveRecord_OnTimer1000ms();
+//     Event_OnTimer1000ms();
+//     WaveRecord_OnTimer1000ms();
 
     MyApp_OnSetDataMetrics();
     MyApp_OnRefreshData();
@@ -280,19 +285,19 @@ void MyApp_OnUpdateDevice(WORD* pwData, BOOL bRemote)
 //     if((bRemote && (g_deviceInfo.wSwitchStatus1&0x100)==0x100)
 //         || (bRemote==FALSE))
 //     {
-        g_deviceSetpoint.INSetpoint[0].wLinkIN = LINKIN_IN01;
-        g_deviceSetpoint.INSetpoint[1].wLinkIN = LINKIN_IN02;
-        g_deviceSetpoint.INSetpoint[2].wLinkIN = LINKIN_IN03;
-        g_deviceSetpoint.INSetpoint[3].wLinkIN = LINKIN_IN04;
+//         g_deviceSetpoint.INSetpoint[0].wLinkIN = LINKIN_IN01;
+//         g_deviceSetpoint.INSetpoint[1].wLinkIN = LINKIN_IN02;
+//         g_deviceSetpoint.INSetpoint[2].wLinkIN = LINKIN_IN03;
+//         g_deviceSetpoint.INSetpoint[3].wLinkIN = LINKIN_IN04;
 //         g_deviceSetpoint.INSetpoint[0].wLinkIN = LINKIN_NULL;
 //         g_deviceSetpoint.INSetpoint[1].wLinkIN = LINKIN_NULL;
 //         g_deviceSetpoint.INSetpoint[2].wLinkIN = LINKIN_NULL;
 //         g_deviceSetpoint.INSetpoint[3].wLinkIN = LINKIN_NULL;
-        MyApp_OnUpdateDeviceSub(pwData);
-        Time_OnUpdateDevice(pwData);
+//         MyApp_OnUpdateDeviceSub(pwData);
+//         Time_OnUpdateDevice(pwData);
 // 		CopyCharToWSZ(g_deviceParam.wszDeviceType,(char*)DEVICETYPE_NAME);
         
-		MyApp_OnUpdateAllDeviceSet(pwData);
+// 		MyApp_OnUpdateAllDeviceSet(pwData);
 //     }
 }
 
@@ -311,14 +316,14 @@ void MyApp_OnRelayOut(void)
 //     {
 //         Output_SetPulse(&g_relayKH[Relay_GZ],20);
 //     }
-    if(g_wProtectOpenFlag==0xaaaa)
-    {
-        Output_SetPulse(&g_relayKH[Relay_J1],20);
-    }
-    if(g_wProtectCloseFlag==0xaaaa)
-    {
-        Output_SetPulse(&g_relayKH[Relay_J2],20);
-    }
+//     if(g_wProtectOpenFlag==0xaaaa)
+//     {
+//         Output_SetPulse(&g_relayKH[Relay_J1],20);
+//     }
+//     if(g_wProtectCloseFlag==0xaaaa)
+//     {
+//         Output_SetPulse(&g_relayKH[Relay_J2],20);
+//     }
 }
 
 void MyApp_TestRelay(WORD wIndex)
@@ -547,16 +552,16 @@ void MyApp_OnTimerSample(WORD wIndex)
     nROld = nR;
 }
 
-void MyApp_OnWaveRecordEx(WORD wSwitchStatus,WORD wData1,WORD wData2,WORD wData3,WORD wData4,WORD wData5,WORD wData6,WORD wData7,WORD wData8)
-{
-    g_wWRData[0] = wData1;
-    g_wWRData[1] = wData2;
-    g_wWRData[2] = wData3;
-    g_wWRData[3] = wData4;
-    g_wWRData[4] = wData5;
-    g_wWRData[5] = wData6;
-    g_wWRData[6] = wSwitchStatus;
-    WaveRecord_OnRecord();
-}
+// void MyApp_OnWaveRecordEx(WORD wSwitchStatus,WORD wData1,WORD wData2,WORD wData3,WORD wData4,WORD wData5,WORD wData6,WORD wData7,WORD wData8)
+// {
+//     g_wWRData[0] = wData1;
+//     g_wWRData[1] = wData2;
+//     g_wWRData[2] = wData3;
+//     g_wWRData[3] = wData4;
+//     g_wWRData[4] = wData5;
+//     g_wWRData[5] = wData6;
+//     g_wWRData[6] = wSwitchStatus;
+//     WaveRecord_OnRecord();
+// }
 
 

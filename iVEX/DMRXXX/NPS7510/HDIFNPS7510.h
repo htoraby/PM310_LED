@@ -13,8 +13,8 @@
 #define _HDIFNPS7510_H
 
 #include "..\PUB\HDIFDMR.h"
-#include "PUB\__LCD.h"
-#include "PUB\__LCDMem.h"
+// #include "PUB\__LCD.h"
+// #include "PUB\__LCDMem.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,8 +1,8 @@
 #ifndef CMYHMIDMR_H
 #define CMYHMIDMR_H
 
-#include "PUB\__Key.h"
-#include "PUB\__Edit.h"
+// #include "PUB\__Key.h"
+// #include "PUB\__Edit.h"
 
 #ifndef MULTI_LANGUAGE
 #define MULTITEXT(szCH,szEN)	((char*)szCH)
@@ -12,13 +12,15 @@
 
 #define ISENGLISH				(g_deviceParam.wMultiLanguage!=0)
 
-#define INDEX_ANALOG		0x0000		//显示索引号基址:模拟量;
-#define INDEX_ALARMED		0x0100		//显示索引号基址:告警信号;
-#define INDEX_TRIPPED		0x0200		//显示索引号基址:故障信号;
-#define INDEX_ERRORED		0x0300		//显示索引号基址:自检信号;
-#define INDEX_PARAM			0x0400		//显示索引号基址:设备参数;
-#define INDEX_PARAM_SCALE2	0x0500		//显示索引号基址:二次测量量程;
-#define INDEX_BOINFO		0x0600		//显示索引号基址:断路器操作信息;
+enum DISPLAY_INDEX
+{
+    INDEX_ANALOG = 0x0000,          // 显示索引号基址:模拟量;
+    INDEX_ANALOGEX = 0x2000,        // 显示索引号基址:扩展模拟量;
+    INDEX_ALARMED = 0x40000,        // 显示索引号基址:告警信号;
+    INDEX_ERRORED = 0x60000,        // 显示索引号基址:自检信号;
+    INDEX_PARAM = 0x80000,          // 显示索引号基址:设备参数;
+};
+
 
 #ifndef LIGHTBAKCNT
 #define LIGHTBAKCNT			8
@@ -86,32 +88,34 @@ extern void MyHMI_OnResetDevice(void);
 extern void MyHMI_AddEventText(char* pszText);
 extern void MyHMI_AddEventTextW(WORD* pszwText);
 extern WORD MyHMI_GetPasswordMode(WORD wInputPassword);
-extern char* MyHMI_GetEventText(EVENT* pEvent);
+// extern char* MyHMI_GetEventText(EVENT* pEvent);
 extern void MyHMI_AutoLCDDataOut(WORD wIndex);
 extern void MyHMI_GetEditMetrics(WORD* pData);
 extern void MyHMI_TestLights(void);
 extern void MyHMI_iiiOnWhileLoopExt(WORD wKeyCode);
 
-extern const char c_szSCIBaudRate[3][6];
-extern const char c_szCANBaudRate[8][5];
-// extern const char c_szLinkIn[][5];
-// extern const char c_szLinkOut[][5];
-// extern const char c_szEventType[3][8];
-// extern const char c_szProtectCFG[4][4];
-extern const char c_szProtectTOG[][4];
+extern void MyHMI_OnRefresh(WORD wRefreshMode);
+
+// extern const char c_szSCIBaudRate[3][6];
+// extern const char c_szCANBaudRate[8][5];
+// // extern const char c_szLinkIn[][5];
+// // extern const char c_szLinkOut[][5];
+// // extern const char c_szEventType[3][8];
+// // extern const char c_szProtectCFG[4][4];
+// extern const char c_szProtectTOG[][4];
 
 // extern MyKey g_key;
 // extern MyEditGroup g_edit;
-extern MyOutput g_lightRun;
-// extern MyOutput g_lightComm;
-extern MyOutput g_lightErrored;
-extern MyOutput g_lightAlarmed;
-extern MyOutput g_lightTripped;
+// extern MyOutput g_lightRun;
+// // extern MyOutput g_lightComm;
+// extern MyOutput g_lightErrored;
+// extern MyOutput g_lightAlarmed;
+// extern MyOutput g_lightTripped;
 // extern MyOutput g_lightBakGRN[LIGHTBAKCNT];
 // extern MyOutput g_lightBakRED[LIGHTBAKCNT];
 
-extern char g_szEventText[41];
-extern WORD g_wCountEventText;
+// extern char g_szEventText[41];
+// extern WORD g_wCountEventText;
 
 #ifdef __cplusplus
 }

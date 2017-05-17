@@ -60,14 +60,14 @@ void Switch_OnTimer1ms(void)
 				if(g_wCountAck[i]==0)
 				{
 					g_wStatusOld[i] = g_wStatusNew[i];
-					if(g_wStatusNew[i]==STATUS_ON)
-					{
-						Event_AddEvent(EVENTTYPE_RUNINFO,EVENTCODE_SWITCH+i,1);
-					}
-					else if(g_wStatusNew[i]==STATUS_OFF)
-					{
-						Event_AddEvent(EVENTTYPE_RUNINFO,EVENTCODE_SWITCH+i,0);
-					}
+// 					if(g_wStatusNew[i]==STATUS_ON)
+// 					{
+// 						Event_AddEvent(EVENTTYPE_RUNINFO,EVENTCODE_SWITCH+i,1);
+// 					}
+// 					else if(g_wStatusNew[i]==STATUS_OFF)
+// 					{
+// 						Event_AddEvent(EVENTTYPE_RUNINFO,EVENTCODE_SWITCH+i,0);
+// 					}
 				}
 			}
 			else g_wCountAck[i] = 5+(i&0x0001);

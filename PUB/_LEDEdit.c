@@ -1,400 +1,493 @@
+//-----------------------------------------------------------------------------------------------------
+//                                  Copyright (c) 2009 by ThinkBoy.
+//                                      All rights reserved.
+//
+// Header:
+// File Name:
+// Author: jimmy
+// Date:
+//-----------------------------------------------------------------------------------------------------
+
 #include "main.h"
-/********************************************************/
 
-#define EM_NONE			0x0000
-#define EM_ENUM			0x0001
-#define EM_DATAWORD		0x0002
-#define EM_DATADWORD	0x0003
-
-#define ES_NULL			0x0000
-#define ES_SELECT		0x0001
-#define ES_EDITING		0x0002
-
-struct EDIT
+//-----------------------------------------------------------------------------
+enum EDITMODE
 {
-	unsigned short wMode;
-	unsigned short wPosX;
-	unsigned short wPosY;
-	unsigned short* pData;
-	unsigned short wReserved[27];
+    EM_NULL = 0x0000,
+    EM_ENUMMUL,
+    EM_DATAWORD,
+    EM_DATADWORD,
 };
 
-struct EDITENUM
+enum EDITSTATUS
 {
-	unsigned short wMode;
-	unsigned short wPosX;
-	unsigned short wPosY;
-	unsigned short* pData;
-	unsigned short wData;
-	unsigned short wCountChar;
-	unsigned short wCountEnum;
-	char* pszEnum[12];
+    ES_NULL = 0x0000,
+    ES_SELECT,
+    ES_EDITING,
 };
 
-struct EDITDATA
+typedef struct
 {
-	unsigned short wMode;
-	unsigned short wPosX;
-	unsigned short wPosY;
-	unsigned short* pData;
-	unsigned long dwData;
-	unsigned long dwDataMin;
-	unsigned long dwDataMax;
-	unsigned short wFormat;
-	unsigned short wScale2XX;
-	unsigned short wDataRunTime;
-	unsigned short wCountBCD;
-	unsigned short wCountBCDAfterDot;
-	unsigned short wCountBCDBeforDot;
-	unsigned short bReserveZero;
-};
+    WORD wMode;             // 编辑项模式
+    WORD wPosX;             // 编辑项X坐标
+    WORD wPosY;             // 编辑项Y坐标
+    WORD wBlinkStatus;      // 闪烁状态
+    WORD* pData;            // 编辑项数据指针
+}stEDIT;
 
-static struct EDIT s_edit;
-static unsigned short s_wEditStatus;
-static unsigned short s_bEditShining;
-static unsigned short s_wEditDataBCD;
-static struct EDITENUM* s_pEditEnum;
-static struct EDITDATA* s_pEditData;
-unsigned short g_wLEDX;
-unsigned short g_wLEDY;
-unsigned short g_wPageAllCount;
-//WORD g_wPasswordLevel;
-
-//*******************************************************************
-static void AddEdit(unsigned short* pData)
+typedef struct
 {
-	s_pEditEnum = 0;
-	s_pEditData = 0;
-	if(g_wLEDY>=4) return;
-	s_edit.wPosX = g_wLEDX;
-	s_edit.wPosY = g_wLEDY;
-	s_edit.pData = pData;
+    stEDIT Base;
+    WORD wData;             // 编辑项暂存数据,无须关心;
+    WORD wCountChar;        // 枚举类型的最大字符数,须赋值;
+    WORD wCountEnum;        // 枚举类型的最大枚举项,须赋值;
+    char* pszEnum;          // 枚举类型的所有枚举项文本,须赋值;
+}stEDITENUM;
+
+typedef struct
+{
+    stEDIT Base;
+    DWORD dwData;           // 编辑项暂存数据,无须关心;
+    DWORD dwDataMin;        // 编辑数据下限,须赋值;
+    DWORD dwDataMax;        // 编辑数据上限,须赋值;
+    WORD wFormat;           // 编辑数据的格式
+}stEDITDATA;
+
+#define BUFFERSIZE          MAX(SIZEOFWORD(stEDITDATA), SIZEOFWORD(stEDITENUM))
+#define EDIT_BUFFERSIZE     (((WORD)(BUFFERSIZE+1))&0xfffe)      // 4字节对齐
+
+//-----------------------------------------------------------------------------
+BOOL EditBase_OnCreate(stEDIT* pEdit, WORD wMode, WORD* pData)
+{
+    pEdit->wMode = wMode;
+    pEdit->wPosX = g_wLEDAutoPosX;
+    pEdit->wPosY = g_wLEDAutoPosY;
+    pEdit->pData = pData;
+    pEdit->wBlinkStatus = 0;
+    return TRUE;
 }
 
-static void DisplayEditEnum(void)
+void EditBase_Blinking(stEDIT* pEdit, WORD wASCIIIndex, char ch)
 {
-	unsigned short wEnumIndex;
-	if(s_pEditEnum->wCountEnum==0)
-	{
-		if(s_pEditEnum->wData==0x5555) wEnumIndex = 1;
-		else wEnumIndex = 0;
-	}
-	else wEnumIndex = s_pEditEnum->wData;
-	if(wEnumIndex>32) wEnumIndex = 32;
-	LEDAsciiOut(s_pEditEnum->wPosX,s_pEditEnum->wPosY,s_pEditEnum->pszEnum[wEnumIndex]);
-}
-
-static void DisplayEditData(void)
-{
-	if(s_pEditData->bReserveZero) g_bFormatRealFillBlank = 0;
-	if(s_wEditStatus==ES_EDITING) g_bFormatRealFillBlank = 0;
-	LEDRealOut(s_pEditData->wPosX,s_pEditData->wPosY,s_pEditData->dwData,s_pEditData->wFormat);
-}
-
-static void OnEditKeyMsgEnum(unsigned short wKeyCode)
-{
-	s_pEditEnum = (struct EDITENUM*)&s_edit;
-	if(s_pEditEnum->wCountEnum==0)
-	{
-		if(wKeyCode==KEY_UP)
-		{
-			if(s_pEditEnum->wData==0x5555) s_pEditEnum->wData = 0x3333;
-// 			else s_pEditEnum->wData = 0x5555;
-		}
-		if(wKeyCode==KEY_DOWN)
-		{
-			if(s_pEditEnum->wData==0x3333) s_pEditEnum->wData = 0x5555;
-// 			else s_pEditEnum->wData = 0x5555;
-		}
-	}
-	else
-	{
-		if(wKeyCode==KEY_UP)
-		{
-			if(s_pEditEnum->wData>0) s_pEditEnum->wData--;
-// 			else s_pEditEnum->wData = s_pEditEnum->wCountEnum-1;
-		}
-		if(wKeyCode==KEY_DOWN)
-		{
-			if(s_pEditEnum->wData<s_pEditEnum->wCountEnum-1) s_pEditEnum->wData++;
-// 			else s_pEditEnum->wData = 0;
-		}
-	}
-	if(wKeyCode==KEY_OK)
-	{
-		*(s_pEditEnum->pData) = s_pEditEnum->wData;
-		MyApp_OnUpdateDevice(s_pEditEnum->pData);
-		s_wEditStatus = ES_SELECT;
-		LEDResetMask();
-	}
-	if(wKeyCode==KEY_CANCEL)
-	{
-		s_pEditEnum->wData = *(s_pEditEnum->pData);
-		s_wEditStatus = ES_SELECT;
-		LEDResetMask();
-	}
-	DisplayEditEnum();
-}
-
-static unsigned long GetBaseOfBCD(void)
-{
-	switch(s_pEditData->wCountBCD-s_wEditDataBCD)
-	{
-	case 1: return 1L;
-	case 2: return 10L;
-	case 3: return 100L;
-	case 4: return 1000L;
-// 	case 5: return 10000L;
-// 	case 6: return 100000L;
-// 	case 7: return 1000000L;
-// 	case 8: return 10000000L;
-	}
-	return 1L;
-}
-
-static void DataWordRTtoBCD(void)
-{
-	if(s_pEditData->wDataRunTime==0) return;
-	if(s_pEditData->wMode==EM_DATAWORD)
-	{
-		s_pEditData->dwData = *(s_pEditData->pData);
-		s_pEditData->dwData *= s_pEditData->wScale2XX;
-		s_pEditData->dwData += s_pEditData->wDataRunTime>>1;
-		s_pEditData->dwData /= s_pEditData->wDataRunTime;
-	}
-	else s_pEditData->dwData = *((unsigned long*)(s_pEditData->pData));
-	if(s_pEditData->dwData<s_pEditData->dwDataMin) s_pEditData->dwData = s_pEditData->dwDataMin;
-	if(s_pEditData->dwData>s_pEditData->dwDataMax) s_pEditData->dwData = s_pEditData->dwDataMax;
-}
-
-static void DataWordBCDtoRT(void)
-{
-	unsigned long dwData;
-	if(s_pEditData->wScale2XX==0) return;
-	if(s_pEditData->wMode==EM_DATAWORD)
-	{
-		dwData = s_pEditData->dwData;
-		dwData *= s_pEditData->wDataRunTime;
-		dwData += s_pEditData->wScale2XX>>1;
-		dwData /= s_pEditData->wScale2XX;
-		*(s_pEditData->pData) = (unsigned short)dwData;
-	}
-	else *((unsigned long*)(s_pEditData->pData)) = s_pEditData->dwData;
-}
-
-static void OnEditKeyMsgData(unsigned short wKeyCode)
-{
-	unsigned long dwBaseOfBCD;
-	unsigned short wCurSelBCD;
-
-	dwBaseOfBCD = GetBaseOfBCD();
-	wCurSelBCD = (unsigned short)((s_pEditData->dwData/dwBaseOfBCD)%10);
-	s_pEditData = (struct EDITDATA*)&s_edit;
-	if(wKeyCode==KEY_DOWN)
-	{
-		if(wCurSelBCD==0) s_pEditData->dwData += 9*dwBaseOfBCD;
-		else s_pEditData->dwData -= dwBaseOfBCD;
-	}
-	if(wKeyCode==KEY_UP)
-	{
-		if(wCurSelBCD>=9) s_pEditData->dwData -= 9*dwBaseOfBCD;
-		else s_pEditData->dwData += dwBaseOfBCD;
-	}
-	if(wKeyCode==KEY_LEFT)
-	{
-		if(s_wEditDataBCD>0)
-		s_wEditDataBCD--;
-	}
-	if(wKeyCode==KEY_RIGHT)
-	{
-		if(s_wEditDataBCD<s_pEditData->wCountBCD-1)
-		s_wEditDataBCD++;
-	}
-	if(wKeyCode==KEY_OK)
-	{
-		if(s_pEditData->dwData>=s_pEditData->dwDataMin&&s_pEditData->dwData<=s_pEditData->dwDataMax)
-		{
-			DataWordBCDtoRT();
-			if(s_pEditData->pData==&g_wPassword)
-			{
-				if(g_wPassword==g_deviceParam.wPassword1) g_wPasswordLevel = PASSWORD_LEVEL1;
-				if(g_wPassword==g_deviceParam.wPassword2) g_wPasswordLevel = PASSWORD_LEVEL2;
-				if(g_wPassword==(6969-g_deviceTime.wMonth*100-g_deviceTime.wDay)) g_wPasswordLevel = PASSWORD_LEVEL3;
-
-				if(g_wPasswordLevel)
-				{
-					if(g_wPasswordLevel==PASSWORD_LEVEL1) g_wPageAllCount = 0;		//一级密码显示页面
-					else g_wPageAllCount = 6;							//二级密码显示页面
-					EnterPageSetup();
-					return;
-				}
-			}
-			MyApp_OnUpdateDevice(s_pEditData->pData);
-		}
-		else DataWordRTtoBCD();
-		s_wEditStatus = ES_SELECT;
-		LEDResetMask();
-	}
-	if(wKeyCode==KEY_CANCEL)
-	{
-		DataWordRTtoBCD();
-		s_wEditStatus = ES_SELECT;
-		LEDResetMask();
-	}
-	DisplayEditData();
+    WORD wPosX;
+    char pch[2];
+    wPosX = pEdit->wPosX + wASCIIIndex;
+    pch[0] = (pEdit->wBlinkStatus&0x01)?ch:' ';
+    pch[1] = 0;
+    LED_ASCIIOut(wPosX, pEdit->wPosY, pch);
 }
 
 
-/*******************************************************************/
-void EditRemoveAll(void)
+//-----------------------------------------------------------------------------
+BOOL EditEnum_OnCreate(stEDITENUM* pEditEnum, WORD wMode, WORD* pData)
 {
-	s_pEditEnum = 0;
-	s_pEditData = 0;
-	s_wEditStatus = ES_NULL;
-	s_bEditShining = 0;
-	MemoryClear((unsigned short*)&s_edit,SIZEOFWORD(s_edit));
+    stEDIT* pEdit = &pEditEnum->Base;
+    if(EditBase_OnCreate(pEdit, wMode, pData)==FALSE) return FALSE;
+    pEditEnum->wCountEnum = 0xffff;
+    pEditEnum->wCountChar = 0xffff;
+    MyHMI_GetEditMetrics(pData);
+    if(pEditEnum->wCountEnum || pEditEnum->wCountChar) return FALSE;
+    pEditEnum->wData = *pData;
+    return TRUE;
 }
 
-void EditAddEnum(unsigned short* pData,char* pszEnum,unsigned short wCountEnum,unsigned short wCountChar)
+void EditEnum_Display(stEDITENUM* pEditEnum, BOOL bCurSel)
 {
-	unsigned int i;
-	AddEdit(pData);
-	s_pEditEnum = (struct EDITENUM*)&s_edit;
-	s_pEditEnum->wMode = EM_ENUM;
-	s_pEditEnum->wCountChar = wCountChar;
-	s_pEditEnum->wCountEnum = wCountEnum;
-	for(i=0;i<wCountEnum;i++)
-		s_pEditEnum->pszEnum[i] = pszEnum+i*(wCountChar+1);
-	s_pEditEnum->wData = *pData;
-	DisplayEditEnum();
+    if(!bCurSel)
+    {
+        stEDIT* pEdit = &pEditEnum->Base;
+        char** pch = (char**)&pEditEnum->pszEnum;
+        if(pEditEnum->wCountEnum>0 && pEditEnum->wData>=pEditEnum->wCountEnum) pEditEnum->wData = 0;
+        LED_ASCIIOut(pEdit->wPosX, pEdit->wPosY, pch[pEditEnum->wData]);
+        pEdit->wBlinkStatus = 0;
+    }
 }
 
-static char c_szOFF[4];
-static char c_sz_ON[4];
-
-void EditAddToggle(unsigned short* pData)
+void EditEnum_Blinking(stEDITENUM* pEditEnum)
 {
-	c_szOFF[0] = 'o';
-	c_szOFF[1] = 'F';
-	c_szOFF[2] = 'F';
-	c_szOFF[3] = 0;
-	c_sz_ON[0] = ' ';
-	c_sz_ON[1] = 'o';
-	c_sz_ON[2] = 'N';
-	c_sz_ON[3] = 0;
-	AddEdit(pData);
-	s_pEditEnum = (struct EDITENUM*)&s_edit;
-	s_pEditEnum->wMode = EM_ENUM;
-	s_pEditEnum->wCountEnum = 0;
-	s_pEditEnum->wCountChar = 3;
-	s_pEditEnum->pszEnum[0] = c_szOFF;
-	s_pEditEnum->pszEnum[1] = c_sz_ON;
-	s_pEditEnum->wData = *pData;
-	DisplayEditEnum();
+    short i;
+    short nLen;
+    char* pChTmp;
+
+    stEDIT* pEdit = &pEditEnum->Base;
+    char** pch = (char**)&pEditEnum->pszEnum;
+    char ch[16];
+    if(pEditEnum->wCountEnum>0 && pEditEnum->wData>=pEditEnum->wCountEnum) pEditEnum->wData = 0;
+    nLen = pEditEnum->wCountChar;
+    if(nLen>=15) nLen = 15;
+    for(i=0;i<nLen;i++)
+    {
+        ch[i] = ' ';
+    }
+    ch[i] = '\0';
+    
+    pChTmp = (pEdit->wBlinkStatus&0x01)?pch[pEditEnum->wData]:ch;
+    LED_ASCIIOut(pEdit->wPosX, pEdit->wPosY, pChTmp);
+    pEdit->wBlinkStatus++;
 }
 
-void EditAddInteger(unsigned short* pData,unsigned short wDataMin,unsigned short wDataMax,unsigned short bReserveZero)
+void EditEnum_EnterEditing(stEDITENUM* pEditEnum)
 {
-	unsigned short wFormat;
-	if(wDataMax<=99) wFormat = 0x20;
-	else if(wDataMax<=999) wFormat = 0x30;
-	else if(wDataMax<=9999) wFormat = 0x40;
-	else wFormat = 0x50;
-	EditAddDataWord(pData,wDataMin,wDataMax,wFormat,1,1);
-	s_pEditData->bReserveZero = bReserveZero;
-	DisplayEditData();
+    EditEnum_Display(pEditEnum, TRUE);
 }
 
-void EditAddDataWord(unsigned short* pData,unsigned long dwDataMin,unsigned long dwDataMax,
-	unsigned short wFormat,unsigned short wScale2XX,unsigned short wDataRunTime)
+WORD EditEnum_OnKeyMsg(stEDITENUM* pEditEnum, WORD wKeyCode, WORD* pwEditStatus)
 {
-	AddEdit(pData);
-	s_pEditData = (struct EDITDATA*)&s_edit;
-	s_pEditData->wMode = EM_DATAWORD;
-	s_pEditData->dwDataMin = dwDataMin;
-	s_pEditData->dwDataMax = dwDataMax;
-	s_pEditData->wFormat = wFormat;
-	s_pEditData->wScale2XX = wScale2XX;
-	s_pEditData->wDataRunTime = wDataRunTime;
-	s_pEditData->wCountBCD = wFormat>>4;
-	s_pEditData->wCountBCDAfterDot = wFormat&0x0f;
-	s_pEditData->wCountBCDBeforDot = (wFormat>>4)-(wFormat&0x0f);
-	DataWordRTtoBCD();
-	DisplayEditData();
+    switch(wKeyCode)
+    {
+    case KEY_UP:
+        pEditEnum->wData += pEditEnum->wCountEnum;
+        pEditEnum->wData--;
+        pEditEnum->wData %= pEditEnum->wCountEnum;
+        wKeyCode = KEY_NULL;
+        break;
+    case KEY_DOWN:
+        pEditEnum->wData++;
+        pEditEnum->wData %= pEditEnum->wCountEnum;
+        wKeyCode = KEY_NULL;
+        break;
+    case KEY_ENTER:
+        *pEditEnum->Base.pData = pEditEnum->wData;
+        MyApp_OnUpdateDevice(pEditEnum->Base.pData, FALSE);
+        *pwEditStatus = ES_SELECT;
+        wKeyCode = KEY_NULL;
+        break;
+    case KEY_CANCEL:
+        pEditEnum->wData = *pEditEnum->Base.pData;
+        *pwEditStatus = ES_SELECT;
+        break;
+    }
+    EditEnum_Display(pEditEnum, *pwEditStatus==ES_EDITING);
+    return wKeyCode;
 }
 
-void EditAddPhQh(unsigned long* pData)
+WORD EditEnum_GetCountChar(stEDITENUM* pEditEnum)
 {
-	AddEdit((unsigned short*)pData);
-	s_pEditData = (struct EDITDATA*)&s_edit;
-	s_pEditData->wMode = EM_DATADWORD;
-	s_pEditData->dwDataMin = 0;
-	s_pEditData->dwDataMax = 99999999;
-	s_pEditData->wFormat = 0x81;
-	s_pEditData->wScale2XX = 1;
-	s_pEditData->wDataRunTime = 1;
-	s_pEditData->wCountBCD = 8;
-	s_pEditData->wCountBCDAfterDot = 1;
-	s_pEditData->wCountBCDBeforDot = 7;
-	DataWordRTtoBCD();
-	DisplayEditData();
+    return pEditEnum->wCountChar;
 }
 
-void EditEnterEdit(void)
+
+//-----------------------------------------------------------------------------
+void EditData_RuntimeDataToEditData(stEDITDATA* pEditData)
 {
-	s_wEditStatus = ES_SELECT;
+    DWORD dwData;
+    stEDIT* pEdit = &pEditData->Base;
+
+    if(pEdit->wMode==EM_DATAWORD) dwData = *((WORD*)pEdit->pData);
+    else dwData = *((DWORD*)pEdit->pData);
+    if(dwData<pEditData->dwDataMin) dwData = pEditData->dwDataMin;
+    if(dwData>pEditData->dwDataMax) dwData = pEditData->dwDataMax;
+    pEditData->dwData = dwData;
 }
 
-void EdiQuittEdit(void)
+void EditData_EditDataToRuntimeData(stEDITDATA* pEditData)
 {
-	s_wEditStatus = ES_NULL;
+    DWORD dwData = pEditData->dwData;
+    stEDIT* pEdit = &pEditData->Base;
+    if(dwData>=pEditData->dwDataMin&&dwData<=pEditData->dwDataMax)
+    {
+        if(pEdit->wMode==EM_DATAWORD) *pEdit->pData = (WORD)dwData;
+        else *((DWORD*)pEdit->pData) = dwData;
+        MyApp_OnUpdateDevice(pEdit->pData, FALSE);
+    }
+    else EditData_RuntimeDataToEditData(pEditData);
 }
 
-unsigned short OnEditKeyMsg(unsigned short wKeyCode)
+BOOL EditData_OnCreate(stEDITDATA* pEditData, WORD wMode, WORD* pData)
 {
-	if(s_wEditStatus==ES_NULL) return wKeyCode;
-	if(s_wEditStatus==ES_SELECT)
-	{
-		if(wKeyCode==KEY_OK)
-		{
-			s_wEditStatus = ES_EDITING;
-			s_bEditShining = 0;
-			s_wEditDataBCD = 0;
-			wKeyCode = KEY_NULL;
-		}
-	}
-	if(s_wEditStatus==ES_EDITING)
-	{
-		if(s_edit.wMode==EM_ENUM) OnEditKeyMsgEnum(wKeyCode);
-		else OnEditKeyMsgData(wKeyCode);
-		return KEY_NULL;
-	}
-	return wKeyCode;
+    stEDIT* pEdit = &pEditData->Base;
+    if(EditBase_OnCreate(pEdit, wMode, pData)==FALSE) return FALSE;
+    pEditData->dwDataMin = 0xffffffff;
+    pEditData->dwDataMax = 0xffffffff;
+    MyHMI_GetEditMetrics(pData);
+    if(pEditData->dwDataMin==0xffffffff || pEditData->dwDataMax==0xffffffff) return FALSE;
+    if((pEditData->wFormat>>4)<=(pEditData->wFormat&0x0f)) return FALSE;
+    EditData_RuntimeDataToEditData(pEditData);
+    return TRUE;
 }
 
-void OnTaskEdit(void)
+void EditData_Display(stEDITDATA* pEditData, BOOL bCurSel)
 {
-	if(s_wEditStatus==ES_EDITING)
-	{
-		if(s_bEditShining)
-		{
-			s_bEditShining = 0;
-			LEDResetMask();
-		}
-		else
-		{
-			s_bEditShining = 1;
-			if(s_edit.wMode==EM_ENUM)
-			{
-				s_pEditEnum = (struct EDITENUM*)&s_edit;
-				LEDSetMask(s_pEditEnum->wPosX,s_pEditEnum->wPosY,s_pEditEnum->wCountChar);
-			}
-			else
-			{
-				s_pEditData = (struct EDITDATA*)&s_edit;
-				LEDSetMask(s_pEditData->wPosX+s_wEditDataBCD,s_pEditData->wPosY,1);
-			}
-		}
-	}
+    if(!bCurSel)
+    {
+        LED_RealOut(pEditData->Base.wPosX, pEditData->Base.wPosY,
+            pEditData->dwData, pEditData->wFormat);
+        pEditData->Base.wBlinkStatus = 0;
+    }
 }
 
+void EditData_Blinking(stEDITDATA* pEditData)
+{
+    if(pEditData->Base.wBlinkStatus&0x01)
+    {
+        LED_RealOut(pEditData->Base.wPosX, pEditData->Base.wPosY,
+            pEditData->dwData, pEditData->wFormat);
+    }
+    else
+    {
+        short i;
+        char ch[16];
+        short nLen = pEditData->wFormat>>4;
+        if(nLen>=15) nLen = 15;
+        for(i=0;i<nLen;i++)
+        {
+            ch[i] = ' ';
+        }
+        ch[i] = '\0';
+
+        LED_ASCIIOut(pEditData->Base.wPosX, pEditData->Base.wPosY, ch);
+    }
+    pEditData->Base.wBlinkStatus++;
+}
+
+void EditData_EnterEditing(stEDITDATA* pEditData)
+{
+    EditData_Display(pEditData, TRUE);
+}
+
+WORD EditData_OnKeyMsg(stEDITDATA* pEditData, WORD wKeyCode, WORD* pwEditStatus)
+{
+    switch(wKeyCode)
+    {
+    case KEY_UP:
+        if(pEditData->dwData>pEditData->dwDataMin) pEditData->dwData--;
+        else pEditData->dwData = pEditData->dwDataMax;
+        wKeyCode = KEY_NULL;
+        break;
+    case KEY_DOWN:
+        if(pEditData->dwData<pEditData->dwDataMax) pEditData->dwData++;
+        else pEditData->dwData = pEditData->dwDataMin;
+        wKeyCode = KEY_NULL;
+        break;
+    case KEY_ENTER:
+        EditData_EditDataToRuntimeData(pEditData);
+        *pwEditStatus = ES_SELECT;
+        wKeyCode = KEY_NULL;
+        break;
+    case KEY_CANCEL:
+        EditData_RuntimeDataToEditData(pEditData);
+        *pwEditStatus = ES_SELECT;
+        break;
+    }
+    EditData_Display(pEditData, *pwEditStatus==ES_EDITING);
+    return wKeyCode;
+}
+
+WORD EditData_GetCountChar(stEDITDATA* pEditData)
+{
+    WORD wCountChar = (pEditData->wFormat>>4);
+    return wCountChar;
+}
+
+static WORD s_wEditCount = 0 ;           // 编辑项个数
+static WORD s_wEditCurSel = 0;           // 当前选中的编辑项
+static WORD s_wEditStatus = 0;           // 当前编辑状态
+// static WORD s_wEditMaxCount = 0;
+// static WORD s_wEnumMaxCount = 0;
+// static WORD s_wEditBuffsize = 0;
+static WORD s_wEditBuffer[EDIT_COUNTMAX][EDIT_BUFFERSIZE];
+// static stEDITENUM* s_pEditEnum;
+// static stEDITDATA* s_pEditData;
+
+//-----------------------------------------------------------------------------
+stEDITENUM* Edit_GetEditEnumCurSel(void)
+{
+    if(s_wEditCurSel<s_wEditCount)
+    {
+        stEDIT* pEdit = (stEDIT*)&s_wEditBuffer[s_wEditCurSel];
+        if(pEdit->wMode==EM_ENUMMUL) return (stEDITENUM*)pEdit;
+    }
+    return NULL;
+}
+
+stEDITDATA* Edit_GetEditDataCurSel(void)
+{
+    if(s_wEditCurSel<s_wEditCount)
+    {
+        stEDIT* pEdit = (stEDIT*)&s_wEditBuffer[s_wEditCurSel];
+        if(pEdit->wMode==EM_DATAWORD || pEdit->wMode==EM_DATADWORD) return (stEDITDATA*)pEdit;
+    }
+    return NULL;
+}
+
+void Edit_AddEdit(WORD wMode, WORD* pData)
+{
+    stEDIT* pEdit;
+    if(pData==NULL) return;
+    if(g_wLEDAutoPosX>=c_wLEDX) return;
+    if(g_wLEDAutoPosY>=c_wLEDY) return;
+    if(s_wEditCount>=EDIT_COUNTMAX) return;
+    pEdit = (stEDIT*)&s_wEditBuffer[s_wEditCount];
+    s_wEditCurSel = s_wEditCount;
+    if(wMode==EM_ENUMMUL)
+    {
+        stEDITENUM* pEditEnum = (stEDITENUM*)pEdit;
+        if(SIZEOFWORD(stEDITENUM)>EDIT_BUFFERSIZE) return;
+        if(EditEnum_OnCreate(pEditEnum, wMode,pData)==FALSE) return;
+    }
+    else if(wMode==EM_DATAWORD || wMode==EM_DATADWORD)
+    {
+        stEDITDATA* pEditData = (stEDITDATA*)pEdit;
+        if(SIZEOFWORD(stEDITDATA)>EDIT_BUFFERSIZE) return;
+        if(EditData_OnCreate(pEditData, wMode,pData)==FALSE) return;
+    }
+    else return;
+    s_wEditCount++;
+}
+
+void Edit_OnInit(void)
+{
+    s_wEditCount = 0;
+    s_wEditCurSel = 0;
+    s_wEditStatus = ES_NULL;
+}
+
+void Edit_AddEditEnumMul(WORD* pData)
+{
+    Edit_AddEdit(EM_ENUMMUL, pData);
+}
+
+void Edit_AddEditDataWord(WORD* pData)
+{
+    Edit_AddEdit(EM_DATAWORD,pData);
+}
+
+void Edit_AddEditDataDWord(DWORD* pData)
+{
+    Edit_AddEdit(EM_DATADWORD, (WORD*)pData);
+}
+
+void Edit_OnRefreshPage(void)
+{
+    short i;
+    for(i=0; i<s_wEditCount; i++)
+    {
+        stEDITENUM* pEditEnum;
+        stEDITDATA* pEditData;
+        WORD wEditCurSelOld = s_wEditCurSel;
+        if(s_wEditStatus==ES_EDITING && i==s_wEditCurSel) continue;
+        s_wEditCurSel = i;
+        pEditEnum = Edit_GetEditEnumCurSel();
+        pEditData = Edit_GetEditDataCurSel();
+        if(pEditEnum)
+        {
+            EditEnum_Display(pEditEnum, FALSE);
+        }
+        if(pEditData)
+        {
+            EditData_Display(pEditData, FALSE);
+        }
+        s_wEditCurSel = wEditCurSelOld;
+    }
+}
+
+void Edit_EnableEdit(WORD wRefreshMode)
+{
+    if(s_wEditStatus!=ES_NULL) return;
+    s_wEditStatus = ES_SELECT;
+}
+
+
+WORD Edit_OnKeyMsg(WORD wKeyCode)
+{
+    stEDITENUM* pEditEnum = Edit_GetEditEnumCurSel();
+    stEDITDATA* pEditData = Edit_GetEditDataCurSel();
+
+    if(s_wEditStatus==ES_NULL) return wKeyCode;
+
+    if(s_wEditStatus==ES_SELECT)
+    {
+        if(wKeyCode==KEY_UP)
+        {
+            if(s_wEditCurSel>=1)
+            {
+                s_wEditCurSel -= 1;
+                wKeyCode = KEY_NULL;
+            }
+        }
+        else if(wKeyCode==KEY_DOWN)
+        {
+            if(s_wEditCurSel+1<s_wEditCount)
+            {
+                s_wEditCurSel += 1;
+                wKeyCode = KEY_NULL;
+            }
+        }
+        else if(wKeyCode==KEY_ENTER)
+        {
+            s_wEditStatus = ES_EDITING;
+            if(pEditEnum) EditEnum_EnterEditing(pEditEnum);
+            if(pEditData) EditData_EnterEditing(pEditData);
+            wKeyCode = KEY_NULL;
+        }
+    }
+    else if(s_wEditStatus==ES_EDITING)
+    {
+        if(pEditEnum) wKeyCode = EditEnum_OnKeyMsg(pEditEnum, wKeyCode, &s_wEditStatus);
+        if(pEditData) wKeyCode = EditData_OnKeyMsg(pEditData, wKeyCode, &s_wEditStatus);
+    }
+    
+    return wKeyCode;
+}
+
+void Edit_OnTimer250ms(void)
+{
+    stEDITENUM* pEditEnum = Edit_GetEditEnumCurSel();
+    stEDITDATA* pEditData = Edit_GetEditDataCurSel();
+
+    if(s_wEditStatus!=ES_EDITING) return;
+
+    if(pEditEnum) EditEnum_Blinking(pEditEnum);
+    if(pEditData) EditData_Blinking(pEditData);
+}
+
+void Edit_SetEditEnumMetricsTog(void)
+{
+    char** pCh;
+    stEDITENUM* pEditEnum = Edit_GetEditEnumCurSel();
+    if(pEditEnum==NULL) return;
+    pEditEnum->wCountEnum = 2;
+    pEditEnum->wCountChar = 3;
+    pCh = &pEditEnum->pszEnum;
+    pCh[0] = "OFF";
+    pCh[1] = " ON";
+}
+
+void Edit_SetEditEnumMetricsMul(WORD wCountEnum, WORD wCountChar, char** pszEnum)
+{
+    short i;
+    char ** pCh, **pChEnum;
+    stEDITENUM* pEditEnum = Edit_GetEditEnumCurSel();
+    if(wCountChar==0) return;
+    if(pEditEnum==NULL) return;
+//     if(wCountEnum>EDIT_COUNTMAX) wCountEnum = s_wEnumMaxCount;
+    pEditEnum->wCountEnum = wCountEnum;
+    pEditEnum->wCountChar = wCountChar-1;
+    pCh = &pEditEnum->pszEnum;
+    pChEnum = pszEnum;
+    for(i=0; i<wCountEnum; i++)
+    {
+        pCh[i] = pChEnum[i];
+    }
+}
+
+void Edit_SetEditDataMetricsInteger(WORD wDataMin, WORD wDataMax)
+{
+    stEDITDATA* pEditData = Edit_GetEditDataCurSel();
+    if(pEditData==NULL) return;
+    pEditData->dwDataMin = wDataMin;
+    pEditData->dwDataMax = wDataMax;
+    if(wDataMax<=9) pEditData->wFormat = 0x10;
+    else if(wDataMax<=99) pEditData->wFormat = 0x20;
+    else if(wDataMax<=999) pEditData->wFormat = 0x30;
+    else if(wDataMax<=9999) pEditData->wFormat = 0x40;
+}
+
+void Edit_SetEditDataMetricsReal(DWORD dwDataMin, DWORD dwDataMax, WORD wFormat)
+{
+    stEDITDATA* pEditData = Edit_GetEditDataCurSel();
+    if(pEditData==NULL) return;
+    pEditData->dwDataMin = dwDataMin;
+    pEditData->dwDataMax = dwDataMax;
+    pEditData->wFormat = wFormat;
+}

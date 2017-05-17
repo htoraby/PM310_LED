@@ -87,7 +87,7 @@ extern void MyApp_OnRefreshData(void);
 extern BOOL MyApp_IsPTBreak(void);
 extern BOOL MyApp_IsOpenBreak(void);
 extern void MyApp_OnWaveRecord(WORD wCountAD);
-extern void MyApp_SetWaveRecordK(WAVERECORD* pWaveRecord);
+// extern void MyApp_SetWaveRecordK(WAVERECORD* pWaveRecord);
 extern short MyApp_GetDataSecondary(MyData* pData,  short nData, BOOL bSignedType);
 
 extern DEVICEPARAM_IBCU2* g_pDeviceParam;

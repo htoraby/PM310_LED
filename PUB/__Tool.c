@@ -250,6 +250,12 @@ WORD GetSqrtX(short nData1,short nData2)
 	return GetSqrt((long)nData1*(long)nData1+(long)nData2*(long)nData2);
 }
 
+char BinToStr(BYTE Data)
+{
+    if(Data<10) return ('0' + Data);
+    else if(Data<16) return ('A' + Data - 10);
+    return 0;
+}
 
 //-----------------------------------------------------------------------------------------------------
 //											End Of File
